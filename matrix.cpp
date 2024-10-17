@@ -1,5 +1,6 @@
 #include "matrix.hpp"
 #include <iostream>
+#include <exception>
 
 void destroyMatrix (int **t, size_t m, size_t n)
 {
@@ -37,6 +38,10 @@ void readMatrix(int **t, size_t m, size_t n)
     {
       std::cin >> t[i][j];
     }
+  }
+  if (!std::cin)
+  {
+    throw "Wrong input!\n";
   }
 }
 
