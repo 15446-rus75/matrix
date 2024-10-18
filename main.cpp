@@ -25,7 +25,7 @@ int main()
   {
     readMatrix(t, M, N);
   }
-  catch(const char* e)
+  catch (const char* e)
   {
     std::cerr << e;
     return 1;
