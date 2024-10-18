@@ -28,6 +28,7 @@ int main()
   catch (const char* e)
   {
     std::cerr << e;
+    destroyMatrix(t, M, N);
     return 1;
   }
   writeMatrix(t, M, N);
