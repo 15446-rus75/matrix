@@ -68,17 +68,17 @@ void Matrix::read()
   ::readMatrix(t_, m_, n_);
 }
 
-void Matrix::write()
+void Matrix::write() const
 {
   ::writeMatrix(t_, m_, n_);
 }
 
-size_t Matrix::getColumns()
+size_t Matrix::getColumns() const
 {
   return n_;
 }
 
-size_t Matrix::getRows()
+size_t Matrix::getRows() const
 {
   return m_;
 }

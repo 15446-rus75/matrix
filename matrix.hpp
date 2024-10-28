@@ -12,9 +12,9 @@ struct Matrix
   {};
   void destroy();
   void read();
-  void write();
-  size_t getRows();
-  size_t getColumns();
+  void write() const;
+  size_t getRows() const;
+  size_t getColumns() const;
   void filling (int a);
   void transform(size_t m, size_t n);
   private:
