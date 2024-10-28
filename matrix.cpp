@@ -93,3 +93,12 @@ void Matrix::filling(int a)
     }
   }
 }
+
+void Matrix::transform(size_t m, size_t n)
+{
+  destroyMatrix(t_, m_, n_);
+  t_ = createMatrix(m, n);
+  m_ = m;
+  n_ = n;
+  filling(0);
+}

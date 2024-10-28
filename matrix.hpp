@@ -16,6 +16,7 @@ struct Matrix
   size_t getRows();
   size_t getColumns();
   void filling (int a);
+  void transform(size_t m, size_t n);
   private:
     int **t_;
     size_t m_;
