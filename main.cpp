@@ -42,5 +42,8 @@ int main()
   }
   mtx.transform(M, N);
   mtx.write();
+  std::cout << "\n";
+  Matrix mtx2 = mtx;
+  mtx2.write();
   mtx.destroy();
 }

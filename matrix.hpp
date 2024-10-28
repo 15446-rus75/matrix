@@ -10,6 +10,9 @@ struct Matrix
   Matrix(size_t m, size_t n):
     t_(createMatrix(m, n)), m_(m), n_(n)
   {};
+  Matrix(const Matrix &mtx):
+    t_(mtx.t_), m_(mtx.m_), n_(mtx.n_)
+    {};
   void destroy();
   void read();
   void write() const;
