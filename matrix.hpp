@@ -13,6 +13,9 @@ struct Matrix
   void destroy();
   void read();
   void write();
+  size_t getRows();
+  size_t getColumns();
+  void filling (int a);
   private:
     int **t_;
     size_t m_;

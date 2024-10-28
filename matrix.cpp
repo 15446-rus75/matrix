@@ -72,3 +72,24 @@ void Matrix::write()
 {
   ::writeMatrix(t_, m_, n_);
 }
+
+size_t Matrix::getColumns()
+{
+  return n_;
+}
+
+size_t Matrix::getRows()
+{
+  return m_;
+}
+
+void Matrix::filling(int a)
+{
+  for (size_t i = 0; i < m_; ++i)
+  {
+    for (size_t j = 0; j < n_; ++j)
+    {
+      t_[i][j] = a;
+    }
+  }
+}
