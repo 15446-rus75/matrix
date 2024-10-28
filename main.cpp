@@ -10,27 +10,8 @@ int main()
     std::cerr << "Wrong input!\n";
     return 1;
   }
-  int **t = nullptr;
-  try
-  {
-    t = createMatrix(M, N);
-  }
-  catch (const std::bad_alloc &e)
-  {
-    std::cerr << "Memory fail\n";
-    delete[] t;
-    return 2;
-  }
-  try
-  {
-    readMatrix(t, M, N);
-  }
-  catch (const char* e)
-  {
-    std::cerr << e;
-    destroyMatrix(t, M, N);
-    return 1;
-  }
-  writeMatrix(t, M, N);
-  destroyMatrix(t, M, N);
+  Matrix mtx = Matrix(M, N);
+  mtx.read();
+  mtx.write();
+  mtx.destroy();
 }

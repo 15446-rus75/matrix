@@ -57,3 +57,18 @@ void writeMatrix(const int * const * t, size_t m, size_t n)
     std::cout << "\n";
   }
 }
+
+void Matrix::destroy()
+{
+  ::destroyMatrix(t_, m_, n_);
+}
+
+void Matrix::read()
+{
+  ::readMatrix(t_, m_, n_);
+}
+
+void Matrix::write()
+{
+  ::writeMatrix(t_, m_, n_);
+}
