@@ -25,7 +25,7 @@ int** createMatrix(size_t m, size_t n)
   catch (const std::bad_alloc &e)
   {
     destroyMatrix(t, created, 0);
-    throw;
+    throw "Memory fail\n";
   }
   return t;
 }
