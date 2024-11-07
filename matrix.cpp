@@ -58,7 +58,37 @@ void writeMatrix(const int * const * t, size_t m, size_t n)
   }
 }
 
-void Matrix::destroy()
+Matrix::Matrix(size_t m, size_t n):
+  t_(createMatrix(m, n)),
+  m_(m),
+  n_(n)
+{}
+
+Matrix::Matrix(size_t m, size_t n, int value):
+  Matrix(m, n)
+{
+  for (size_t i = 0; i < m; ++i)
+  {
+    for (size_t j = 0; j < n; ++j)
+    {
+      t_[i][j] = value;
+    }
+  }
+}
+
+Matrix::Matrix(const Matrix &mtx):
+  Matrix(mtx.m_, mtx.n_)
+{
+  for (size_t i = 0; i < mtx.m_; ++i)
+  {
+    for (size_t j = 0; j < mtx.n_; ++j)
+    {
+      t_[i][j] = mtx.t_[i][j];
+    }
+  }
+}
+
+Matrix::~Matrix()
 {
   ::destroyMatrix(t_, m_, n_);
 }
@@ -96,8 +126,9 @@ void Matrix::filling(int a)
 
 void Matrix::transform(size_t m, size_t n)
 {
-  destroyMatrix(t_, m_, n_);
+  int **old_t_ = t_;
   t_ = createMatrix(m, n);
+  destroyMatrix(old_t_, m_, n_);
   m_ = m;
   n_ = n;
   filling(0);

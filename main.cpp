@@ -21,12 +21,13 @@ int main()
     std::cout << "Number of rows: " << mtx.getRows() << "\n";
     std::cout << "Number of columns: " << mtx.getColumns() << "\n";
     int a = 0;
+    std::cout << "\n";
     std::cout << "Enter an integer for fill in matrix: ";
     std::cin >> a;
     if (!std::cin)
     {
       std::cerr << "Wrong input!\n";
-      mtx.destroy();
+      mtx.~Matrix();
       return 1;
     }
     else
@@ -39,15 +40,12 @@ int main()
     if (!std::cin || M == 0 || N == 0)
     {
       std::cerr << "Wrong input!\n";
-      mtx.destroy();
+      mtx.~Matrix();
       return 1;
     }
     mtx.transform(M, N);
     mtx.write();
     std::cout << "\n";
-    Matrix mtx2 = mtx;
-    mtx2.write();
-    mtx.destroy();
   }
   catch (const std::bad_alloc &e)
   {

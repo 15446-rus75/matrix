@@ -7,13 +7,11 @@ void readMatrix(int **t, size_t m, size_t n);
 void writeMatrix(const int * const *t, size_t m, size_t n);
 struct Matrix
 {
-  Matrix(size_t m, size_t n):
-    t_(createMatrix(m, n)), m_(m), n_(n)
-  {};
-  Matrix(const Matrix &mtx):
-    t_(mtx.t_), m_(mtx.m_), n_(mtx.n_)
-    {};
-  void destroy();
+  Matrix();
+  ~Matrix();
+  Matrix(size_t m, size_t n);
+  Matrix(size_t m, size_t n, int value);
+  Matrix(const Matrix &mtx);
   void read();
   void write() const;
   size_t getRows() const;
