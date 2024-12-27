@@ -56,3 +56,32 @@ void writeMatrix(const int * const * t, size_t m, size_t n)
     std::cout << "\n";
   }
 }
+
+Matrix::Matrix(size_t m, size_t n, int value)
+{
+  rows = m;
+  cols = n;
+  data = createMatrix(m, n);
+  for (size_t i = 0; i < m; ++i)
+  {
+    for (size_t j = 0; j < n; ++j)
+    {
+      data[i][j] = value;
+    }
+  }
+}
+
+Matrix::Matrix(size_t m, size_t n, const int *values)
+{
+  rows = m;
+  cols = n;
+  data = createMatrix(m, n);
+  size_t k = 0;
+  for (size_t i = 0; i < m; ++i)
+  {
+    for (size_t j = 0; j < n; ++j)
+    {
+      data[i][j] = values[k++];
+    }
+  }
+}
