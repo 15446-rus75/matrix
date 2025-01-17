@@ -1,5 +1,6 @@
 #include "matrix.hpp"
 #include <iostream>
+#include <stdexcept>
 
 void destroyMatrix (int **t, size_t m, size_t n)
 {
@@ -24,7 +25,7 @@ int** createMatrix(size_t m, size_t n)
   catch (const std::bad_alloc &e)
   {
     destroyMatrix(t, created, 0);
-    throw "Memory fail\n";
+    throw;
   }
   return t;
 }
@@ -40,7 +41,7 @@ void readMatrix(int **t, size_t m, size_t n)
   }
   if (!std::cin)
   {
-    throw "Wrong input!\n";
+    throw std::logic_error("Wrong input\n");
   }
 }
 
