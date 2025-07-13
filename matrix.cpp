@@ -21,7 +21,7 @@ abramov::Matrix::Matrix(const Matrix &matrix):
   }
 }
 
-abramov::Matrix::Matrix(Matrix &&matrix):
+abramov::Matrix::Matrix(Matrix &&matrix) noexcept:
   data(matrix.data),
   rows(matrix.rows),
   cols(matrix.cols)
@@ -60,6 +60,25 @@ abramov::Matrix::Matrix(size_t m, size_t n, const int *values):
   }
 }
 
+abramov::Matrix::~Matrix()
+{
+  destroyMatrix(data, rows);
+}
+
+abramov::Matrix &abramov::Matrix::operator=(const Matrix &matrix)
+{
+  Matrix tmp(matrix);
+  swap(tmp);
+  return *this;
+}
+
+abramov::Matrix &abramov::Matrix::operator=(Matrix &&matrix) noexcept
+{
+  Matrix tmp(matrix);
+  swap(tmp);
+  return *this;
+}
+
 int **abramov::Matrix::initMatrix(size_t m, size_t n)
 {
   int **data = new int*[m];
@@ -86,4 +105,11 @@ void abramov::Matrix::destroyMatrix(int **data, size_t m) noexcept
     delete[] data[i];
   }
   delete[] data;
+}
+
+void abramov::Matrix::swap(Matrix &matrix) noexcept
+{
+  std::swap(data, matrix.data);
+  std::swap(rows, matrix.rows);
+  std::swap(cols, matrix.cols);
 }
