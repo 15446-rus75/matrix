@@ -16,8 +16,11 @@ namespace abramov
     Matrix &operator=(Matrix &&matrix) noexcept;
     Matrix &operator+=(const Matrix &other);
     Matrix operator+() const;
+    Matrix &operator-=(const Matrix &other);
+    Matrix operator-() const;
 
     friend Matrix operator+(Matrix lhs, const Matrix &rhs);
+    friend Matrix operator-(Matrix lhs, const Matrix &rhs);
   private:
     int **data;
     size_t rows;
@@ -29,5 +32,6 @@ namespace abramov
   };
 
   Matrix operator+(Matrix lhs, const Matrix &rhs);
+  Matrix operator-(Matrix lhs, const Matrix &rhs);
 }
 #endif

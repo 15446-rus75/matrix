@@ -110,6 +110,45 @@ abramov::Matrix abramov::Matrix::operator+() const
   return *this;
 }
 
+abramov::Matrix &abramov::Matrix::operator-=(const Matrix &matrix)
+{
+  if (rows != matrix.rows || cols != matrix.cols)
+  {
+    throw std::invalid_argument("Matrix dimensions do not agree\n");
+  }
+  if (!matrix.data)
+  {
+    throw std::invalid_argument("Invalid matrix\n");
+  }
+  for (size_t i = 0; i < matrix.rows; ++i)
+  {
+    for (size_t j = 0; j < matrix.cols; ++j)
+    {
+      data[i][j] -= matrix.data[i][j];
+    }
+  }
+  return *this;
+}
+
+abramov::Matrix abramov::operator-(Matrix lhs, const Matrix &rhs)
+{
+  lhs -= rhs;
+  return lhs;
+}
+
+abramov::Matrix abramov::Matrix::operator-() const
+{
+  Matrix res(*this);
+  for (size_t i = 0; i < res.rows; ++i)
+  {
+    for (size_t j = 0; j < res.cols; ++j)
+    {
+      res.data[i][j] *= -1;
+    }
+  }
+  return res;
+}
+
 int **abramov::Matrix::initMatrix(size_t m, size_t n)
 {
   int **data = new int*[m];
