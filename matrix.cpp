@@ -79,6 +79,37 @@ abramov::Matrix &abramov::Matrix::operator=(Matrix &&matrix) noexcept
   return *this;
 }
 
+abramov::Matrix &abramov::Matrix::operator+=(const Matrix &matrix)
+{
+  if (rows != matrix.rows || cols != matrix.cols)
+  {
+    throw std::invalid_argument("Matrix dimensions do not agree\n");
+  }
+  if (!matrix.data)
+  {
+    throw std::invalid_argument("Invalid matrix\n");
+  }
+  for (size_t i = 0; i < matrix.rows; ++i)
+  {
+    for (size_t j = 0; j < matrix.cols; ++i)
+    {
+      data[i][j] += matrix.data[i][j];
+    }
+  }
+  return *this;
+}
+
+abramov::Matrix abramov::operator+(Matrix lhs, const Matrix &rhs)
+{
+  lhs += rhs;
+  return lhs;
+}
+
+abramov::Matrix abramov::Matrix::operator+() const
+{
+  return *this;
+}
+
 int **abramov::Matrix::initMatrix(size_t m, size_t n)
 {
   int **data = new int*[m];

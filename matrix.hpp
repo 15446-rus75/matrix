@@ -14,6 +14,10 @@ namespace abramov
     ~Matrix();
     Matrix &operator=(const Matrix &matrix);
     Matrix &operator=(Matrix &&matrix) noexcept;
+    Matrix &operator+=(const Matrix &other);
+    Matrix operator+() const;
+
+    friend Matrix operator+(Matrix lhs, const Matrix &rhs);
   private:
     int **data;
     size_t rows;
@@ -23,5 +27,7 @@ namespace abramov
     void destroyMatrix(int **data, size_t m) noexcept;
     void swap(Matrix &matrix) noexcept;
   };
+
+  Matrix operator+(Matrix lhs, const Matrix &rhs);
 }
 #endif
