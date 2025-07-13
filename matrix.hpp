@@ -1,5 +1,6 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
+#include <cstddef>
 
 namespace abramov
 {
@@ -17,6 +18,9 @@ namespace abramov
     int **data;
     size_t rows;
     size_t cols;
+
+    int **initMatrix(size_t m, size_t n);
+    void destroyMatrix(int **data, size_t m) noexcept;
   };
 }
 #endif
