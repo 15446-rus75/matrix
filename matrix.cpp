@@ -8,7 +8,7 @@ abramov::Matrix::Matrix():
 {}
 
 abramov::Matrix::Matrix(const Matrix &matrix):
-  data(initMatrix(matrix.rows, matrix.cols)),
+  data(initMatrix(data, matrix.rows, matrix.cols)),
   rows(matrix.rows),
   cols(matrix.cols)
 {
@@ -32,7 +32,7 @@ abramov::Matrix::Matrix(Matrix &&matrix) noexcept:
 }
 
 abramov::Matrix::Matrix(size_t m, size_t n, int value):
-  data(initMatrix(m, n)),
+  data(initMatrix(data, m, n)),
   rows(m),
   cols(n)
 {
@@ -46,7 +46,7 @@ abramov::Matrix::Matrix(size_t m, size_t n, int value):
 }
 
 abramov::Matrix::Matrix(size_t m, size_t n, const int *values):
-  data(initMatrix(m, n)),
+  data(initMatrix(data, m, n)),
   rows(m),
   cols(n)
 {
@@ -156,7 +156,7 @@ abramov::Matrix &abramov::Matrix::operator*=(const Matrix &other)
     throw std::invalid_argument("Matrix dimensions do not agree\n");
   }
   Matrix res;
-  initMatrix(rows, other.cols);
+  initMatrix(res.data, rows, other.cols);
   for (size_t i = 0; i < rows; ++i)
   {
     for (size_t j = 0; j < other.cols; ++ j)
@@ -178,9 +178,25 @@ abramov::Matrix abramov::operator*(Matrix lhs, const Matrix &rhs)
   return lhs;
 }
 
-int **abramov::Matrix::initMatrix(size_t m, size_t n)
+abramov::Matrix abramov::Matrix::transpose()
 {
-  int **data = new int*[m];
+  Matrix res;
+  res.rows = cols;
+  res.cols = rows;
+  initMatrix(res.data, res.rows, res.cols);
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < cols; ++j)
+    {
+      res.data[j][i] = data[i][j];
+    }
+  }
+  return res;
+}
+
+int **abramov::Matrix::initMatrix(int **data, size_t m, size_t n)
+{
+  data = new int*[m];
   size_t created = 0;
   try
   {

@@ -19,6 +19,7 @@ namespace abramov
     Matrix &operator-=(const Matrix &other);
     Matrix operator-() const;
     Matrix &operator*=(const Matrix &other);
+    Matrix transpose();
 
     friend Matrix operator+(Matrix lhs, const Matrix &rhs);
     friend Matrix operator-(Matrix lhs, const Matrix &rhs);
@@ -28,7 +29,7 @@ namespace abramov
     size_t rows;
     size_t cols;
 
-    int **initMatrix(size_t m, size_t n);
+    int **initMatrix(int **data, size_t m, size_t n);
     void destroyMatrix(int **data, size_t m) noexcept;
     void swap(Matrix &matrix) noexcept;
   };
