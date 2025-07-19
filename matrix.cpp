@@ -149,6 +149,35 @@ abramov::Matrix abramov::Matrix::operator-() const
   return res;
 }
 
+abramov::Matrix &abramov::Matrix::operator*=(const Matrix &other)
+{
+  if (cols != other.rows)
+  {
+    throw std::invalid_argument("Matrix dimensions do not agree\n");
+  }
+  Matrix res;
+  initMatrix(rows, other.cols);
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < other.cols; ++ j)
+    {
+      for (size_t k = 0; k < cols; ++k)
+      {
+        res.data[i][j] += data[i][k] * other.data[k][j];
+      }
+    }
+  }
+  destroyMatrix(data, rows);
+  swap(res);
+  return *this;
+}
+
+abramov::Matrix abramov::operator*(Matrix lhs, const Matrix &rhs)
+{
+  lhs *= rhs;
+  return lhs;
+}
+
 int **abramov::Matrix::initMatrix(size_t m, size_t n)
 {
   int **data = new int*[m];
