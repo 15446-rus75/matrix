@@ -23,6 +23,7 @@ namespace abramov
     Matrix &operator*=(T scalar);
     Matrix transpose();
     int determinant();
+    Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
 
     friend Matrix operator+(Matrix lhs, const Matrix &rhs);
     friend Matrix operator-(Matrix lhs, const Matrix &rhs);

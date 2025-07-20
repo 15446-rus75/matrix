@@ -262,6 +262,42 @@ int abramov::Matrix::determinant()
   return det;
 }
 
+abramov::Matrix abramov::Matrix::horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill)
+{
+  size_t max_rows = std::max(lhs.rows, rhs.rows);
+  size_t total_cols = lhs.cols + rhs.cols;
+  Matrix res;
+  res.rows = max_rows;
+  res.cols = total_cols;
+  initMatrix(res.data, max_rows, total_cols);
+  for (size_t i = 0; i < max_rows; ++i)
+  {
+    for (size_t j = 0; j < lhs.cols; ++j)
+    {
+      if (i < lhs.rows)
+      {
+        res.data[i][j] = lhs.data[i][j];
+      }
+      else
+      {
+        res.data[i][j] = fill;
+      }
+    }
+    for (size_t j = 0; j < rhs.cols; ++j)
+    {
+      if (i < rhs.rows)
+      {
+        res.data[i][lhs.cols + j] = rhs.data[i][j];
+      }
+      else
+      {
+        res.data[i][lhs.cols + j] = fill;
+      }
+    }
+  }
+  return res;
+}
+
 int **abramov::Matrix::initMatrix(int **data, size_t m, size_t n)
 {
   data = new int*[m];
