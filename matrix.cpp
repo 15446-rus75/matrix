@@ -194,6 +194,48 @@ abramov::Matrix abramov::Matrix::transpose()
   return res;
 }
 
+int abramov::Matrix::determinant()
+{
+  if (rows != cols)
+  {
+    throw std::logic_error("Matrix must be square to get determinant\n");
+  }
+  if (rows == 1)
+  {
+    return data[0][0];
+  }
+  if (rows == 2)
+  {
+    return data[0][0] * data[1][1] - data[0][1] * data[1][0];
+  }
+  if (rows == 3)
+  {
+    int det = 0;
+    det += data[0][0] * data[1][1] * data[2][2];
+    det += data[0][1] * data[1][2] * data[2][0];
+    det += data[0][2] * data[1][0] * data[2][1];
+    det -= data[0][2] * data[1][1] * data[2][0];
+    det -= data[0][1] * data[1][0] * data[2][2];
+    det -= data[0][0] * data[1][2] * data[2][1];
+    return det;
+  }
+  int det = 0;
+  for (size_t j = 0; j < cols; ++j)
+  {
+    Matrix minor = createMinor(0, j);
+    int minor_det = minor.determinant();
+    if (j % 2 == 0)
+    {
+      det += data[0][j] * minor_det;
+    }
+    else
+    {
+      det -= data[0][j] * minor_det;
+    }
+  }
+  return det;
+}
+
 int **abramov::Matrix::initMatrix(int **data, size_t m, size_t n)
 {
   data = new int*[m];
@@ -220,6 +262,32 @@ void abramov::Matrix::destroyMatrix(int **data, size_t m) noexcept
     delete[] data[i];
   }
   delete[] data;
+}
+
+abramov::Matrix abramov::Matrix::createMinor(size_t row, size_t col)
+{
+  Matrix minor;
+  minor.rows = rows - 1;
+  minor.cols = cols - 1;
+  initMatrix(minor.data, minor.rows, minor.cols);
+  for (size_t i = 0, mi = 0; i < rows; ++i)
+  {
+    if (i == row)
+    {
+      continue;
+    }
+    for (size_t j = 0, mj = 0; j < cols; ++j)
+    {
+      if (j == col)
+      {
+        continue;
+      }
+      minor.data[mi][mj] = data[i][j];
+      ++mj;
+    }
+    ++mi;
+  }
+  return minor;
 }
 
 void abramov::Matrix::swap(Matrix &matrix) noexcept
