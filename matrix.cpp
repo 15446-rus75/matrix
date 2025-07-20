@@ -335,6 +335,35 @@ abramov::Matrix abramov::Matrix::verticalConcat(const Matrix &top, const Matrix 
   return res;
 }
 
+abramov::Matrix abramov::Matrix::diagonalConcat(const Matrix &a, const Matrix &b, int fill)
+{
+  size_t total_rows = a.rows + b.rows;
+  size_t total_cols = a.cols + b.cols;
+  Matrix res;
+  res.rows = total_rows;
+  res.cols = total_cols;
+  initMatrix(res.data, total_rows, total_cols);
+  for (size_t i = 0; i < total_rows; ++i)
+  {
+    for (size_t j = 0; j < total_cols; ++j)
+    {
+      if (i < a.rows && j < a.cols)
+      {
+        res.data[i][j] = a.data[i][j];
+      }
+      else if (i >= a.rows && j >= a.cols)
+      {
+        res.data[i][j] = b.data[i - a.rows][j - a.cols];
+      }
+      else
+      {
+        res.data[i][j] = fill;
+      }
+    }
+  }
+  return res;
+}
+
 int **abramov::Matrix::initMatrix(int **data, size_t m, size_t n)
 {
   data = new int*[m];
