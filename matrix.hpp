@@ -19,6 +19,8 @@ namespace abramov
     Matrix &operator-=(const Matrix &other);
     Matrix operator-() const;
     Matrix &operator*=(const Matrix &other);
+    template< class T >
+    Matrix &operator*=(T scalar);
     Matrix transpose();
     int determinant();
 
@@ -39,5 +41,9 @@ namespace abramov
   Matrix operator+(Matrix lhs, const Matrix &rhs);
   Matrix operator-(Matrix lhs, const Matrix &rhs);
   Matrix operator*(Matrix lhs, const Matrix &rhs);
+  template< class T >
+  Matrix operator*(Matrix lhs, T scalar);
+  template< class T >
+  Matrix operator*(T scalar, const Matrix &rhs);
 }
 #endif
