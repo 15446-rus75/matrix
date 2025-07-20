@@ -8,7 +8,7 @@ abramov::Matrix::Matrix():
 {}
 
 abramov::Matrix::Matrix(const Matrix &matrix):
-  data(initMatrix(matrix.rows, matrix.cols)),
+  data(initMatrix(data, matrix.rows, matrix.cols)),
   rows(matrix.rows),
   cols(matrix.cols)
 {
@@ -32,7 +32,7 @@ abramov::Matrix::Matrix(Matrix &&matrix) noexcept:
 }
 
 abramov::Matrix::Matrix(size_t m, size_t n, int value):
-  data(initMatrix(m, n)),
+  data(initMatrix(data, m, n)),
   rows(m),
   cols(n)
 {
@@ -46,7 +46,7 @@ abramov::Matrix::Matrix(size_t m, size_t n, int value):
 }
 
 abramov::Matrix::Matrix(size_t m, size_t n, const int *values):
-  data(initMatrix(m, n)),
+  data(initMatrix(data, m, n)),
   rows(m),
   cols(n)
 {
@@ -79,9 +79,319 @@ abramov::Matrix &abramov::Matrix::operator=(Matrix &&matrix) noexcept
   return *this;
 }
 
-int **abramov::Matrix::initMatrix(size_t m, size_t n)
+abramov::Matrix &abramov::Matrix::operator+=(const Matrix &matrix)
 {
-  int **data = new int*[m];
+  if (rows != matrix.rows || cols != matrix.cols)
+  {
+    throw std::invalid_argument("Matrix dimensions do not agree\n");
+  }
+  if (!matrix.data)
+  {
+    throw std::invalid_argument("Invalid matrix\n");
+  }
+  for (size_t i = 0; i < matrix.rows; ++i)
+  {
+    for (size_t j = 0; j < matrix.cols; ++i)
+    {
+      data[i][j] += matrix.data[i][j];
+    }
+  }
+  return *this;
+}
+
+abramov::Matrix abramov::operator+(Matrix lhs, const Matrix &rhs)
+{
+  lhs += rhs;
+  return lhs;
+}
+
+abramov::Matrix abramov::Matrix::operator+() const
+{
+  return *this;
+}
+
+abramov::Matrix &abramov::Matrix::operator-=(const Matrix &matrix)
+{
+  if (rows != matrix.rows || cols != matrix.cols)
+  {
+    throw std::invalid_argument("Matrix dimensions do not agree\n");
+  }
+  if (!matrix.data)
+  {
+    throw std::invalid_argument("Invalid matrix\n");
+  }
+  for (size_t i = 0; i < matrix.rows; ++i)
+  {
+    for (size_t j = 0; j < matrix.cols; ++j)
+    {
+      data[i][j] -= matrix.data[i][j];
+    }
+  }
+  return *this;
+}
+
+abramov::Matrix abramov::operator-(Matrix lhs, const Matrix &rhs)
+{
+  lhs -= rhs;
+  return lhs;
+}
+
+abramov::Matrix abramov::Matrix::operator-() const
+{
+  Matrix res(*this);
+  for (size_t i = 0; i < res.rows; ++i)
+  {
+    for (size_t j = 0; j < res.cols; ++j)
+    {
+      res.data[i][j] *= -1;
+    }
+  }
+  return res;
+}
+
+abramov::Matrix &abramov::Matrix::operator*=(const Matrix &other)
+{
+  if (cols != other.rows)
+  {
+    throw std::invalid_argument("Matrix dimensions do not agree\n");
+  }
+  Matrix res;
+  initMatrix(res.data, rows, other.cols);
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < other.cols; ++ j)
+    {
+      for (size_t k = 0; k < cols; ++k)
+      {
+        res.data[i][j] += data[i][k] * other.data[k][j];
+      }
+    }
+  }
+  destroyMatrix(data, rows);
+  swap(res);
+  return *this;
+}
+
+abramov::Matrix abramov::operator*(Matrix lhs, const Matrix &rhs)
+{
+  lhs *= rhs;
+  return lhs;
+}
+
+template< class T >
+abramov::Matrix &abramov::Matrix::operator*=(T scalar)
+{
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < cols; ++j)
+    {
+      data[i][j] *= static_cast< int >(scalar);
+    }
+  }
+  return *this;
+}
+
+template< class T >
+abramov::Matrix abramov::operator*(Matrix lhs, T scalar)
+{
+  lhs *= scalar;
+  return lhs;
+}
+
+template< class T >
+abramov::Matrix abramov::operator*(T scalar, const Matrix &rhs)
+{
+  return rhs * scalar;
+}
+
+abramov::Matrix abramov::Matrix::transpose()
+{
+  Matrix res;
+  res.rows = cols;
+  res.cols = rows;
+  initMatrix(res.data, res.rows, res.cols);
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < cols; ++j)
+    {
+      res.data[j][i] = data[i][j];
+    }
+  }
+  return res;
+}
+
+int abramov::Matrix::determinant()
+{
+  if (rows != cols)
+  {
+    throw std::logic_error("Matrix must be square to get determinant\n");
+  }
+  if (rows == 1)
+  {
+    return data[0][0];
+  }
+  if (rows == 2)
+  {
+    return data[0][0] * data[1][1] - data[0][1] * data[1][0];
+  }
+  if (rows == 3)
+  {
+    int det = 0;
+    det += data[0][0] * data[1][1] * data[2][2];
+    det += data[0][1] * data[1][2] * data[2][0];
+    det += data[0][2] * data[1][0] * data[2][1];
+    det -= data[0][2] * data[1][1] * data[2][0];
+    det -= data[0][1] * data[1][0] * data[2][2];
+    det -= data[0][0] * data[1][2] * data[2][1];
+    return det;
+  }
+  int det = 0;
+  for (size_t j = 0; j < cols; ++j)
+  {
+    Matrix minor = createMinor(0, j);
+    int minor_det = minor.determinant();
+    if (j % 2 == 0)
+    {
+      det += data[0][j] * minor_det;
+    }
+    else
+    {
+      det -= data[0][j] * minor_det;
+    }
+  }
+  return det;
+}
+
+abramov::Matrix abramov::Matrix::horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill)
+{
+  size_t max_rows = std::max(lhs.rows, rhs.rows);
+  size_t total_cols = lhs.cols + rhs.cols;
+  Matrix res;
+  res.rows = max_rows;
+  res.cols = total_cols;
+  initMatrix(res.data, max_rows, total_cols);
+  for (size_t i = 0; i < max_rows; ++i)
+  {
+    for (size_t j = 0; j < lhs.cols; ++j)
+    {
+      if (i < lhs.rows)
+      {
+        res.data[i][j] = lhs.data[i][j];
+      }
+      else
+      {
+        res.data[i][j] = fill;
+      }
+    }
+    for (size_t j = 0; j < rhs.cols; ++j)
+    {
+      if (i < rhs.rows)
+      {
+        res.data[i][lhs.cols + j] = rhs.data[i][j];
+      }
+      else
+      {
+        res.data[i][lhs.cols + j] = fill;
+      }
+    }
+  }
+  return res;
+}
+
+abramov::Matrix abramov::Matrix::verticalConcat(const Matrix &top, const Matrix &bottom, int fill)
+{
+  size_t max_cols = std::max(top.cols, bottom.cols);
+  size_t total_rows = top.rows + bottom.rows;
+  Matrix res;
+  res.rows = total_rows;
+  res.cols = max_cols;
+  initMatrix(res.data, total_rows, max_cols);
+  for (size_t i = 0; i < total_rows; ++i)
+  {
+    if (i < top.rows)
+    {
+      for (size_t j = 0; j < top.cols; ++j)
+      {
+        res.data[i][j] = top.data[i][j];
+      }
+      for (size_t j = top.cols; j < max_cols; ++j)
+      {
+        res.data[i][j] = fill;
+      }
+    }
+    else
+    {
+      size_t bottom_i = i - top.rows;
+      for (size_t j = 0; j < bottom.cols; ++j)
+      {
+        res.data[i][j] = bottom.data[bottom_i][j];
+      }
+      for (size_t j = bottom.cols; j < max_cols; ++j)
+      {
+        res.data[i][j] = fill;
+      }
+    }
+  }
+  return res;
+}
+
+abramov::Matrix abramov::Matrix::diagonalConcat(const Matrix &a, const Matrix &b, int fill)
+{
+  size_t total_rows = a.rows + b.rows;
+  size_t total_cols = a.cols + b.cols;
+  Matrix res;
+  res.rows = total_rows;
+  res.cols = total_cols;
+  initMatrix(res.data, total_rows, total_cols);
+  for (size_t i = 0; i < total_rows; ++i)
+  {
+    for (size_t j = 0; j < total_cols; ++j)
+    {
+      if (i < a.rows && j < a.cols)
+      {
+        res.data[i][j] = a.data[i][j];
+      }
+      else if (i >= a.rows && j >= a.cols)
+      {
+        res.data[i][j] = b.data[i - a.rows][j - a.cols];
+      }
+      else
+      {
+        res.data[i][j] = fill;
+      }
+    }
+  }
+  return res;
+}
+
+abramov::Matrix abramov::Matrix::kroneckerProduct(const Matrix &a, const Matrix &b)
+{
+  Matrix res;
+  res.rows = a.rows * b.rows;
+  res.cols = a.cols * b.cols;
+  initMatrix(res.data, res.rows, res.cols);
+  for (size_t i = 0; i < a.rows; ++i)
+  {
+    for (size_t j = 0; j < a.cols; ++j)
+    {
+      const int curr = a.data[i][j];
+      const size_t block_row_start = i * b.rows;
+      const size_t block_col_start = j * b.cols;
+      for (size_t bi = 0; bi < b.rows; ++bi)
+      {
+        for (size_t bj = 0; bj < b.cols; ++bj)
+        {
+          res.data[block_row_start + bi][block_col_start + bj] = curr * b.data[bi][bj];
+        }
+      }
+    }
+  }
+  return res;
+}
+
+int **abramov::Matrix::initMatrix(int **data, size_t m, size_t n)
+{
+  data = new int*[m];
   size_t created = 0;
   try
   {
@@ -105,6 +415,32 @@ void abramov::Matrix::destroyMatrix(int **data, size_t m) noexcept
     delete[] data[i];
   }
   delete[] data;
+}
+
+abramov::Matrix abramov::Matrix::createMinor(size_t row, size_t col)
+{
+  Matrix minor;
+  minor.rows = rows - 1;
+  minor.cols = cols - 1;
+  initMatrix(minor.data, minor.rows, minor.cols);
+  for (size_t i = 0, mi = 0; i < rows; ++i)
+  {
+    if (i == row)
+    {
+      continue;
+    }
+    for (size_t j = 0, mj = 0; j < cols; ++j)
+    {
+      if (j == col)
+      {
+        continue;
+      }
+      minor.data[mi][mj] = data[i][j];
+      ++mj;
+    }
+    ++mi;
+  }
+  return minor;
 }
 
 void abramov::Matrix::swap(Matrix &matrix) noexcept
