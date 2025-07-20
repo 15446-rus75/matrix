@@ -26,6 +26,7 @@ namespace abramov
     Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
     Matrix verticalConcat(const Matrix &top, const Matrix &bottom, int fill = 0);
     Matrix diagonalConcat(const Matrix &a, const Matrix &b, int fill = 0);
+    Matrix kroneckerProduct(const Matrix &a, const Matrix &b);
 
     friend Matrix operator+(Matrix lhs, const Matrix &rhs);
     friend Matrix operator-(Matrix lhs, const Matrix &rhs);

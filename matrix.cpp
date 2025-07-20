@@ -364,6 +364,31 @@ abramov::Matrix abramov::Matrix::diagonalConcat(const Matrix &a, const Matrix &b
   return res;
 }
 
+abramov::Matrix abramov::Matrix::kroneckerProduct(const Matrix &a, const Matrix &b)
+{
+  Matrix res;
+  res.rows = a.rows * b.rows;
+  res.cols = a.cols * b.cols;
+  initMatrix(res.data, res.rows, res.cols);
+  for (size_t i = 0; i < a.rows; ++i)
+  {
+    for (size_t j = 0; j < a.cols; ++j)
+    {
+      const int curr = a.data[i][j];
+      const size_t block_row_start = i * b.rows;
+      const size_t block_col_start = j * b.cols;
+      for (size_t bi = 0; bi < b.rows; ++bi)
+      {
+        for (size_t bj = 0; bj < b.cols; ++bj)
+        {
+          res.data[block_row_start + bi][block_col_start + bj] = curr * b.data[bi][bj];
+        }
+      }
+    }
+  }
+  return res;
+}
+
 int **abramov::Matrix::initMatrix(int **data, size_t m, size_t n)
 {
   data = new int*[m];
