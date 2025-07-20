@@ -298,6 +298,43 @@ abramov::Matrix abramov::Matrix::horizontalConcat(const Matrix &lhs, const Matri
   return res;
 }
 
+abramov::Matrix abramov::Matrix::verticalConcat(const Matrix &top, const Matrix &bottom, int fill)
+{
+  size_t max_cols = std::max(top.cols, bottom.cols);
+  size_t total_rows = top.rows + bottom.rows;
+  Matrix res;
+  res.rows = total_rows;
+  res.cols = max_cols;
+  initMatrix(res.data, total_rows, max_cols);
+  for (size_t i = 0; i < total_rows; ++i)
+  {
+    if (i < top.rows)
+    {
+      for (size_t j = 0; j < top.cols; ++j)
+      {
+        res.data[i][j] = top.data[i][j];
+      }
+      for (size_t j = top.cols; j < max_cols; ++j)
+      {
+        res.data[i][j] = fill;
+      }
+    }
+    else
+    {
+      size_t bottom_i = i - top.rows;
+      for (size_t j = 0; j < bottom.cols; ++j)
+      {
+        res.data[i][j] = bottom.data[bottom_i][j];
+      }
+      for (size_t j = bottom.cols; j < max_cols; ++j)
+      {
+        res.data[i][j] = fill;
+      }
+    }
+  }
+  return res;
+}
+
 int **abramov::Matrix::initMatrix(int **data, size_t m, size_t n)
 {
   data = new int*[m];
