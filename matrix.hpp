@@ -39,7 +39,7 @@ namespace abramov
     size_t rows;
     size_t cols;
 
-    int **initMatrix(int **data, size_t m, size_t n);
+    int **initMatrix(size_t m, size_t n);
     void destroyMatrix(int **data, size_t m) noexcept;
     Matrix createMinor(size_t row, size_t col);
     void swap(Matrix &matrix) noexcept;
