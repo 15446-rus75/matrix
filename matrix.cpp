@@ -374,9 +374,9 @@ abramov::Matrix abramov::Matrix::kroneckerProduct(const Matrix &a, const Matrix 
   {
     for (size_t j = 0; j < a.cols; ++j)
     {
-      const int curr = a.data[i][j];
-      const size_t block_row_start = i * b.rows;
-      const size_t block_col_start = j * b.cols;
+      int curr = a.data[i][j];
+      size_t block_row_start = i * b.rows;
+      size_t block_col_start = j * b.cols;
       for (size_t bi = 0; bi < b.rows; ++bi)
       {
         for (size_t bj = 0; bj < b.cols; ++bj)
@@ -387,6 +387,58 @@ abramov::Matrix abramov::Matrix::kroneckerProduct(const Matrix &a, const Matrix 
     }
   }
   return res;
+}
+
+std::ostream &abramov::Matrix::print(std::ostream &out)
+{
+  std::ostream::sentry s(out);
+  if (!s)
+  {
+    return out;
+  }
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < cols - 1; ++j)
+    {
+      out << data[i][j] << " ";
+    }
+    out << data[i][cols - 1] << "\n";
+  }
+  return out;
+}
+
+std::istream &abramov::Matrix::read(std::istream &in)
+{
+  std::istream::sentry s(in);
+  if (!s)
+  {
+    return in;
+  }
+  size_t m = 0;
+  size_t n = 0;
+  if (!(in >> m >> n))
+  {
+    return in;
+  }
+  Matrix tmp;
+  tmp.rows = m;
+  tmp.cols = n;
+  initMatrix(tmp.data, m, n);
+  for (size_t i = 0; i < m; ++i)
+  {
+    for (size_t j = 0; j < n; ++j)
+    {
+      if (!(in >> tmp.data[i][j]))
+      {
+        return in;
+      }
+    }
+  }
+  if (in)
+  {
+    swap(tmp);
+  }
+  return in;
 }
 
 int **abramov::Matrix::initMatrix(int **data, size_t m, size_t n)

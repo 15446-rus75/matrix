@@ -1,6 +1,7 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 #include <cstddef>
+#include <iostream>
 
 namespace abramov
 {
@@ -27,6 +28,8 @@ namespace abramov
     Matrix verticalConcat(const Matrix &top, const Matrix &bottom, int fill = 0);
     Matrix diagonalConcat(const Matrix &a, const Matrix &b, int fill = 0);
     Matrix kroneckerProduct(const Matrix &a, const Matrix &b);
+    std::ostream &print(std::ostream &out = std::cout);
+    std::istream &read(std::istream &in = std::cin);
 
     friend Matrix operator+(Matrix lhs, const Matrix &rhs);
     friend Matrix operator-(Matrix lhs, const Matrix &rhs);
