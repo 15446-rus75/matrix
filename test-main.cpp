@@ -39,3 +39,19 @@ BOOST_AUTO_TEST_CASE(move_constructor)
 {
   abramov::Matrix matrix(abramov::Matrix{});
 }
+
+BOOST_AUTO_TEST_CASE(copy_operator_equal)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix copy_matrix = matrix;
+  bool b = matrix == copy_matrix;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(move_operator_equal)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix copy_matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  bool b = matrix == copy_matrix;
+  BOOST_TEST(b);
+}
