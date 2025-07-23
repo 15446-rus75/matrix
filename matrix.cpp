@@ -60,6 +60,37 @@ abramov::Matrix::Matrix(size_t m, size_t n, const int *values):
   }
 }
 
+abramov::Matrix::Matrix(std::initializer_list < std::initializer_list< int > > init)
+{
+  rows = init.size();
+  if (!rows)
+  {
+    cols = 0;
+    data = nullptr;
+    return;
+  }
+  cols = init.begin()->size();
+  for (const auto &row : init)
+  {
+    if (row.size() != cols)
+    {
+      throw std::logic_error("Invalid matrix\n");
+    }
+  }
+  data = initMatrix(rows, cols);
+  size_t i = 0;
+  for (const auto &row : init)
+  {
+    size_t j = 0;
+    for (int val : row)
+    {
+      data[i][j] = val;
+      ++j;
+    }
+    ++i;
+  }
+}
+
 abramov::Matrix::~Matrix()
 {
   destroyMatrix(data, rows);
@@ -202,6 +233,25 @@ template< class T >
 abramov::Matrix abramov::operator*(T scalar, const Matrix &rhs)
 {
   return rhs * scalar;
+}
+
+bool abramov::Matrix::operator==(const Matrix &other)
+{
+  if (rows != other.rows || cols != other.cols)
+  {
+    return false;
+  }
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < cols; ++j)
+    {
+      if (data[i][j] != other.data[i][j])
+      {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 abramov::Matrix abramov::Matrix::transpose()

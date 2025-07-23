@@ -2,6 +2,7 @@
 #define MATRIX_HPP
 #include <cstddef>
 #include <iostream>
+#include <initializer_list>
 
 namespace abramov
 {
@@ -12,6 +13,7 @@ namespace abramov
     Matrix(Matrix &&matrix) noexcept;
     Matrix(size_t m, size_t n, int value);
     Matrix(size_t m, size_t n, const int *values);
+    Matrix(std::initializer_list< std::initializer_list< int > > init);
     ~Matrix();
     Matrix &operator=(const Matrix &matrix);
     Matrix &operator=(Matrix &&matrix) noexcept;
@@ -22,6 +24,7 @@ namespace abramov
     Matrix &operator*=(const Matrix &other);
     template< class T >
     Matrix &operator*=(T scalar);
+    bool operator==(const Matrix &other);
     Matrix transpose();
     int determinant();
     Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
