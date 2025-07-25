@@ -21,6 +21,7 @@ BOOST_AUTO_TEST_CASE(data_constructor)
     vals[i] = i;
   }
   abramov::Matrix matrix(3, 3, vals);
+  delete[] vals;
 }
 
 BOOST_AUTO_TEST_CASE(copy_constructor)
@@ -33,6 +34,7 @@ BOOST_AUTO_TEST_CASE(copy_constructor)
   }
   abramov::Matrix tmp(3, 3, vals);
   abramov::Matrix matrix(tmp);
+  delete[] vals;
 }
 
 BOOST_AUTO_TEST_CASE(move_constructor)
@@ -52,6 +54,34 @@ BOOST_AUTO_TEST_CASE(move_operator_equal)
 {
   abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
   abramov::Matrix copy_matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  bool b = matrix == copy_matrix;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_plus_equal)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix copy_matrix = matrix;
+  matrix += copy_matrix;
+  abramov::Matrix res = { { 2, 4, 6 }, { 8, 10, 12 }, { 14, 16, 18 } };
+  bool b = matrix == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_binary_plus)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix copy_matrix = matrix;
+  abramov::Matrix new_matrix = matrix + copy_matrix;
+  abramov::Matrix res = { { 2, 4, 6 }, { 8, 10, 12 }, { 14, 16, 18 } };
+  bool b = new_matrix == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_unary_plus)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix copy_matrix = +matrix;
   bool b = matrix == copy_matrix;
   BOOST_TEST(b);
 }

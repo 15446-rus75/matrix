@@ -122,7 +122,7 @@ abramov::Matrix &abramov::Matrix::operator+=(const Matrix &matrix)
   }
   for (size_t i = 0; i < matrix.rows; ++i)
   {
-    for (size_t j = 0; j < matrix.cols; ++i)
+    for (size_t j = 0; j < matrix.cols; ++j)
     {
       data[i][j] += matrix.data[i][j];
     }
