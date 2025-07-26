@@ -24,6 +24,9 @@ BOOST_AUTO_TEST_CASE(data_constructor)
     vals[i] = i;
   }
   abramov::Matrix matrix(3, 3, vals);
+  abramov::Matrix res = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } };
+  bool b = matrix == res;
+  BOOST_TEST(b);
   delete[] vals;
 }
 
@@ -37,6 +40,9 @@ BOOST_AUTO_TEST_CASE(copy_constructor)
   }
   abramov::Matrix tmp(3, 3, vals);
   abramov::Matrix matrix(tmp);
+  abramov::Matrix res = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } };
+  bool b = matrix == res;
+  BOOST_TEST(b);
   delete[] vals;
 }
 
