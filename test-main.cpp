@@ -185,3 +185,33 @@ BOOST_AUTO_TEST_CASE(determinant)
   abramov::Matrix m4 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 16 } };
   BOOST_TEST(m4.determinant() == 0);
 }
+
+BOOST_AUTO_TEST_CASE(horizontal_concat)
+{
+  abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 } };
+  abramov::Matrix m2 = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
+  abramov::Matrix conc = m1.horizontalConcat(m1, m2);
+  abramov::Matrix res = { { 1, 2, 3, 7, 8 }, { 4, 5, 6, 9, 10 }, { 0, 0, 0, 11, 12 } };
+  bool b = conc == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(vertical_concat)
+{
+  abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 } };
+  abramov::Matrix m2 = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
+  abramov::Matrix conc = m1.verticalConcat(m1, m2);
+  abramov::Matrix res = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 }, { 9, 10, 0 }, { 11, 12, 0 } };
+  bool b = conc == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(diagonal_concat)
+{
+  abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 } };
+  abramov::Matrix m2 = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
+  abramov::Matrix conc = m1.diagonalConcat(m1, m2);
+  abramov::Matrix res = { { 1, 2, 3, 0, 0 }, { 4, 5, 6, 0, 0 }, { 0, 0, 0, 7, 8 }, { 0, 0, 0, 9, 10 }, { 0, 0, 0, 11, 12 } };
+  bool b = conc == res;
+  BOOST_TEST(b);
+}
