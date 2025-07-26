@@ -56,4 +56,30 @@ namespace abramov
   template< class T >
   Matrix operator*(T scalar, const Matrix &rhs);
 }
+
+template< class T >
+abramov::Matrix &abramov::Matrix::operator*=(T scalar)
+{
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < cols; ++j)
+    {
+      data[i][j] *= static_cast< int >(scalar);
+    }
+  }
+  return *this;
+}
+
+template< class T >
+abramov::Matrix abramov::operator*(Matrix lhs, T scalar)
+{
+  lhs *= scalar;
+  return lhs;
+}
+
+template< class T >
+abramov::Matrix abramov::operator*(T scalar, const Matrix &rhs)
+{
+  return rhs * scalar;
+}
 #endif

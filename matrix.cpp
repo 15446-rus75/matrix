@@ -186,8 +186,7 @@ abramov::Matrix &abramov::Matrix::operator*=(const Matrix &other)
   {
     throw std::invalid_argument("Matrix dimensions do not agree\n");
   }
-  Matrix res;
-  res.data = initMatrix(rows, other.cols);
+  Matrix res(rows,other.cols, 0);
   for (size_t i = 0; i < rows; ++i)
   {
     for (size_t j = 0; j < other.cols; ++ j)
@@ -198,7 +197,6 @@ abramov::Matrix &abramov::Matrix::operator*=(const Matrix &other)
       }
     }
   }
-  destroyMatrix(data, rows);
   swap(res);
   return *this;
 }
@@ -207,32 +205,6 @@ abramov::Matrix abramov::operator*(Matrix lhs, const Matrix &rhs)
 {
   lhs *= rhs;
   return lhs;
-}
-
-template< class T >
-abramov::Matrix &abramov::Matrix::operator*=(T scalar)
-{
-  for (size_t i = 0; i < rows; ++i)
-  {
-    for (size_t j = 0; j < cols; ++j)
-    {
-      data[i][j] *= static_cast< int >(scalar);
-    }
-  }
-  return *this;
-}
-
-template< class T >
-abramov::Matrix abramov::operator*(Matrix lhs, T scalar)
-{
-  lhs *= scalar;
-  return lhs;
-}
-
-template< class T >
-abramov::Matrix abramov::operator*(T scalar, const Matrix &rhs)
-{
-  return rhs * scalar;
 }
 
 bool abramov::Matrix::operator==(const Matrix &other)

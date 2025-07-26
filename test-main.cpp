@@ -117,3 +117,50 @@ BOOST_AUTO_TEST_CASE(operator_unary_minus)
   bool b = anti_matrix == res;
   BOOST_TEST(b);
 }
+
+BOOST_AUTO_TEST_CASE(operator_multiple_equal_matrix)
+{
+  abramov::Matrix a = { { 1, 2 }, { 3, 4 }, { 5, 6 }, { 7, 8 } };
+  abramov::Matrix c = { { 6, 5, 4 }, { 3, 2, 1 } };
+  a *= c;
+  abramov::Matrix res = { { 12, 9, 6 }, { 30, 23, 16 }, { 48, 37, 26 }, { 66, 51, 36 } };
+  bool b = a == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_multiple_matrix_matrix)
+{
+  abramov::Matrix a = { { 1, 2 }, { 3, 4 }, { 5, 6 }, { 7, 8 } };
+  abramov::Matrix c = { { 6, 5, 4 }, { 3, 2, 1 } };
+  abramov::Matrix d = a * c;
+  abramov::Matrix res = { { 12, 9, 6 }, { 30, 23, 16 }, { 48, 37, 26 }, { 66, 51, 36 } };
+  bool b = d == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_multiple_equal_scalar)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  matrix *= 2;
+  abramov::Matrix res = { { 2, 4, 6 }, { 8, 10, 12 }, { 14, 16, 18 } };
+  bool b = matrix == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_multiple_matrix_scalar)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix double_matrix = matrix * 2;
+  abramov::Matrix res = { { 2, 4, 6 }, { 8, 10, 12 }, { 14, 16, 18 } };
+  bool b = double_matrix == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_multiple_scalar_matrix)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix double_matrix = 2 * matrix;
+  abramov::Matrix res = { { 2, 4, 6 }, { 8, 10, 12 }, { 14, 16, 18 } };
+  bool b = double_matrix == res;
+  BOOST_TEST(b);
+}
