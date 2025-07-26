@@ -10,6 +10,9 @@ BOOST_AUTO_TEST_CASE(default_constructor)
 BOOST_AUTO_TEST_CASE(fill_constructor)
 {
   abramov::Matrix matrix(3, 3, 0);
+  abramov::Matrix res = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
+  bool b = matrix == res;
+  BOOST_TEST(b);
 }
 
 BOOST_AUTO_TEST_CASE(data_constructor)
@@ -83,5 +86,34 @@ BOOST_AUTO_TEST_CASE(operator_unary_plus)
   abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
   abramov::Matrix copy_matrix = +matrix;
   bool b = matrix == copy_matrix;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_minus_equal)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix copy_matrix = matrix;
+  matrix -= copy_matrix;
+  abramov::Matrix res(3, 3, 0);
+  bool b = matrix == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_binary_minus)
+{
+  abramov::Matrix matrix = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix copy_matrix = matrix;
+  abramov::Matrix res = matrix - copy_matrix;
+  abramov::Matrix zero(3, 3, 0);
+  bool b = res == zero;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(operator_unary_minus)
+{
+  abramov::Matrix matrix(3, 3, 1);
+  abramov::Matrix anti_matrix = -matrix;
+  abramov::Matrix res(3, 3, -1);
+  bool b = anti_matrix == res;
   BOOST_TEST(b);
 }
