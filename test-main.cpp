@@ -215,3 +215,13 @@ BOOST_AUTO_TEST_CASE(diagonal_concat)
   bool b = conc == res;
   BOOST_TEST(b);
 }
+
+BOOST_AUTO_TEST_CASE(kronecker_product)
+{
+  abramov::Matrix m1 = { { 1, 2 }, { 3, 4 } };
+  abramov::Matrix m2 = { { 0, 5 }, { 6, 7 } };
+  abramov::Matrix prod = m1.kroneckerProduct(m1, m2);
+  abramov::Matrix res = { { 0, 5, 0, 10 }, { 6, 7, 12, 14 }, { 0, 15, 0, 20 }, { 18, 21, 24, 28 } };
+  bool b = prod == res;
+  BOOST_TEST(b);
+}
