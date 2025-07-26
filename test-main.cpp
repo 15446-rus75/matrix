@@ -164,3 +164,24 @@ BOOST_AUTO_TEST_CASE(operator_multiple_scalar_matrix)
   bool b = double_matrix == res;
   BOOST_TEST(b);
 }
+
+BOOST_AUTO_TEST_CASE(transpose)
+{
+  abramov::Matrix matrix = { { 1, 2 }, { 3, 4 }, { 5, 6 }, { 7, 8 } };
+  abramov::Matrix t = matrix.transpose();
+  abramov::Matrix res = { { 1, 3, 5, 7 }, { 2, 4, 6, 8 } };
+  bool b = t == res;
+  BOOST_TEST(b);
+}
+
+BOOST_AUTO_TEST_CASE(determinant)
+{
+  abramov::Matrix m1 = { { 1 } };
+  BOOST_TEST(m1.determinant() == 1);
+  abramov::Matrix m2 = { { 1, 2 }, { 3, 4 } };
+  BOOST_TEST(m2.determinant() == -2);
+  abramov::Matrix m3 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  BOOST_TEST(m3.determinant() == 0);
+  abramov::Matrix m4 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 16 } };
+  BOOST_TEST(m4.determinant() == 0);
+}
