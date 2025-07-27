@@ -1,23 +1,32 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra -g
-TESTFLAGS = -lboost_unit_test_framework -DBOOST_TEST_DYN_LINK
-SRC = main.cpp matrix.cpp
-TEST_SRC = test-main.cpp matrix.cpp
-HEADERS = matrix.hpp
-TARGET = matrix
-TEST_TARGET = matrix-tests
+CXXFLAGS = -std=c++14 -Wall -Wextra -I.
+TEST_LDFLAGS = -lboost_unit_test_framework -static
 
-.PHONY: all test clean
-all: $(TARGET)
+PROGRAM_SRCS = main.cpp matrix.cpp
+TEST_SRCS = test-main.cpp matrix.cpp
 
-test: $(TEST_TARGET)
-	./$(TEST_TARGET)
+PROGRAM = matrix_program
+TEST_EXEC = matrix_tests
 
-$(TARGET): $(SRC) $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(SRC) -o $(TARGET)
+.PHONY: all clean test run
 
-$(TEST_TARGET): $(TEST_SRC) $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(TEST_SRC) -o $(TEST_TARGET) $(TESTFLAGS)
+all: $(PROGRAM)
+
+$(PROGRAM): $(PROGRAM_SRCS) matrix.hpp
+	$(CXX) $(CXXFLAGS) $(PROGRAM_SRCS) -o $@
+
+$(TEST_EXEC): $(TEST_SRCS) matrix.hpp
+	$(CXX) $(CXXFLAGS) $(TEST_SRCS) -o $@ $(TEST_LDFLAGS)
+
+test: $(TEST_EXEC)
+	./$(TEST_EXEC)
+
+run: $(PROGRAM)
+	@if [ -z "$(arg1)" ] || [ -z "$(arg2)" ]; then \
+		echo "Usage: make run arg1=<param1> arg2=<param2>"; \
+		exit 1; \
+	fi
+	./$(PROGRAM) $(arg1) $(arg2)
 
 clean:
-	rm -f $(TARGET) $(TEST_TARGET) *.o
+	rm -f $(PROGRAM) $(TEST_EXEC) *.o
