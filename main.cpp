@@ -89,20 +89,20 @@ int main(int argc, char **argv)
     copy.print();
     std::cout << '\n';
 
-    copy = m1.horizontalConcat(m1, m2);
+    copy = Matrix::horizontalConcat(m1, m2);
     std::cout << "horizontal_concatenation\n";
     copy.print();
     std::cout << '\n';
-    copy = m1.verticalConcat(m1, m2);
+    copy = Matrix::verticalConcat(m1, m2);
     std::cout << "vertical_concatenation\n";
     copy.print();
     std::cout << '\n';
-    copy = m1.diagonalConcat(m1,m2);
+    copy = Matrix::diagonalConcat(m1,m2);
     std::cout << "diagonal_concatenation\n";
     copy.print();
     std::cout << '\n';
 
-    copy = m1.kroneckerProduct(m1, m2);
+    copy = Matrix::kroneckerProduct(m1, m2);
     std::cout << "Kronecker product\n";
     copy.print();
   }
