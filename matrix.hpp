@@ -24,14 +24,17 @@ namespace abramov
     Matrix &operator*=(const Matrix &other);
     template< class T >
     Matrix &operator*=(T scalar);
-    bool operator==(const Matrix &other);
-    Matrix transpose();
-    int determinant();
-    Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
-    Matrix verticalConcat(const Matrix &top, const Matrix &bottom, int fill = 0);
-    Matrix diagonalConcat(const Matrix &a, const Matrix &b, int fill = 0);
-    Matrix kroneckerProduct(const Matrix &a, const Matrix &b);
-    std::ostream &print(std::ostream &out = std::cout);
+    bool operator==(const Matrix &other) const;
+    Matrix transpose() const;
+    int determinant() const;
+    int trace() const;
+    int perm() const;
+    int rank() const;
+    static Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
+    static Matrix verticalConcat(const Matrix &top, const Matrix &bottom, int fill = 0);
+    static Matrix diagonalConcat(const Matrix &a, const Matrix &b, int fill = 0);
+    static Matrix kroneckerProduct(const Matrix &a, const Matrix &b);
+    std::ostream &print(std::ostream &out = std::cout) const;
     std::istream &read(std::istream &in = std::cin);
 
     friend Matrix operator+(Matrix lhs, const Matrix &rhs);
@@ -42,9 +45,9 @@ namespace abramov
     size_t rows;
     size_t cols;
 
-    int **initMatrix(size_t m, size_t n);
-    void destroyMatrix(int **data, size_t m) noexcept;
-    Matrix createMinor(size_t row, size_t col);
+    static int **initMatrix(size_t m, size_t n);
+    static void destroyMatrix(int **data, size_t m) noexcept;
+    Matrix createMinor(size_t row, size_t col) const;
     void swap(Matrix &matrix) noexcept;
   };
 

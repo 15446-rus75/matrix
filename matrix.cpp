@@ -1,4 +1,5 @@
 #include "matrix.hpp"
+#include <numeric>
 #include <stdexcept>
 
 abramov::Matrix::Matrix():
@@ -207,7 +208,7 @@ abramov::Matrix abramov::operator*(Matrix lhs, const Matrix &rhs)
   return lhs;
 }
 
-bool abramov::Matrix::operator==(const Matrix &other)
+bool abramov::Matrix::operator==(const Matrix &other) const
 {
   if (rows != other.rows || cols != other.cols)
   {
@@ -226,7 +227,7 @@ bool abramov::Matrix::operator==(const Matrix &other)
   return true;
 }
 
-abramov::Matrix abramov::Matrix::transpose()
+abramov::Matrix abramov::Matrix::transpose() const
 {
   Matrix res;
   res.rows = cols;
@@ -242,7 +243,7 @@ abramov::Matrix abramov::Matrix::transpose()
   return res;
 }
 
-int abramov::Matrix::determinant()
+int abramov::Matrix::determinant() const
 {
   if (rows != cols)
   {
@@ -282,6 +283,107 @@ int abramov::Matrix::determinant()
     }
   }
   return det;
+}
+
+int abramov::Matrix::trace() const
+{
+  if (rows != cols)
+  {
+    throw std::logic_error("Matrix is not square\n");
+  }
+  int tr = 0;
+  for (size_t i = 0; i < rows; ++i)
+  {
+    tr += data[i][i];
+  }
+  return tr;
+}
+
+int abramov::Matrix::perm() const
+{
+  int **vals = data;
+  int r = rows;
+  int c = cols;
+  if (rows < cols)
+  {
+    Matrix m = transpose();
+    vals = m.data;
+    r = m.rows;
+    c = m.cols;
+  }
+  if (c == 1)
+  {
+    int p = 0;
+    for (size_t i = 0; i < r; ++i)
+    {
+      p += vals[i][0];
+    }
+    return p;
+  }
+  if (c == 2)
+  {
+    int p = 0;
+    for (size_t i = 0; i < r; ++i)
+    {
+      for (size_t j = i + 1; j < r; ++j)
+      {
+        p += vals[i][0] * vals[j][1] + vals[i][1] * vals[j][0];
+      }
+    }
+    return p;
+  }
+  int p = 0;
+  for (size_t i = 0; i < r; ++i)
+  {
+    Matrix minor = createMinor(i, 0);
+    p += vals[i][0] * minor.perm();
+  }
+  return p;
+}
+
+int abramov::Matrix::rank() const
+{
+  abramov::Matrix copy(*this);
+  int r = 0;
+  for (size_t col = 0; col < cols && r < rows; ++col)
+  {
+    int pivot = r;
+    while (pivot < rows && copy.data[pivot][col] == 0)
+    {
+      ++pivot;
+    }
+    if (pivot == rows)
+    {
+      continue;
+    }
+    if (pivot != r)
+    {
+      std::swap(copy.data[r], copy.data[pivot]);
+    }
+    for (size_t i = r + 1; i < rows; ++i)
+    {
+      if (copy.data[i][col] != 0)
+      {
+        int a = copy.data[r][col];
+        int b = copy.data[i][col];
+        while (b != 0)
+        {
+          int temp = b;
+          b = a % b;
+          a = temp;
+        }
+        int gcd_val = a;
+        int f1 = copy.data[r][col] / gcd_val;
+        int f2 = copy.data[i][col] / gcd_val;
+        for (size_t j = col; j < cols; ++j)
+        {
+          copy.data[i][j] = copy.data[i][j] * f1 - copy.data[r][j] * f2;
+        }
+      }
+    }
+    ++r;
+  }
+  return r;
 }
 
 abramov::Matrix abramov::Matrix::horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill)
@@ -411,7 +513,7 @@ abramov::Matrix abramov::Matrix::kroneckerProduct(const Matrix &a, const Matrix 
   return res;
 }
 
-std::ostream &abramov::Matrix::print(std::ostream &out)
+std::ostream &abramov::Matrix::print(std::ostream &out) const
 {
   std::ostream::sentry s(out);
   if (!s)
@@ -491,7 +593,7 @@ void abramov::Matrix::destroyMatrix(int **data, size_t m) noexcept
   delete[] data;
 }
 
-abramov::Matrix abramov::Matrix::createMinor(size_t row, size_t col)
+abramov::Matrix abramov::Matrix::createMinor(size_t row, size_t col) const
 {
   Matrix minor;
   minor.rows = rows - 1;
