@@ -80,6 +80,14 @@ int main(int argc, char **argv)
     std::cout << "determinant of the second matrix: " << m2.determinant() << '\n';
     std::cout << '\n';
 
+    std::cout << "trace of the first matrix: " << m1.trace() << '\n';
+    std::cout << "trace of the second matrix: " << m2.trace() << '\n';
+    std::cout << '\n';
+
+    std::cout << "permanent of the first matrix: " << m1.perm() << '\n';
+    std::cout << "permanent of the second matrix: " << m2.perm() << '\n';
+    std::cout << '\n';
+
     copy = m1 * 2;
     std::cout << "operator_multiple_matrix_scalar\n";
     copy.print();
