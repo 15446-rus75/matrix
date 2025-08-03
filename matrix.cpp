@@ -207,7 +207,7 @@ abramov::Matrix abramov::operator*(Matrix lhs, const Matrix &rhs)
   return lhs;
 }
 
-bool abramov::Matrix::operator==(const Matrix &other)
+bool abramov::Matrix::operator==(const Matrix &other) const
 {
   if (rows != other.rows || cols != other.cols)
   {
@@ -226,7 +226,7 @@ bool abramov::Matrix::operator==(const Matrix &other)
   return true;
 }
 
-abramov::Matrix abramov::Matrix::transpose()
+abramov::Matrix abramov::Matrix::transpose() const
 {
   Matrix res;
   res.rows = cols;
@@ -242,7 +242,7 @@ abramov::Matrix abramov::Matrix::transpose()
   return res;
 }
 
-int abramov::Matrix::determinant()
+int abramov::Matrix::determinant() const
 {
   if (rows != cols)
   {
@@ -282,6 +282,20 @@ int abramov::Matrix::determinant()
     }
   }
   return det;
+}
+
+int abramov::Matrix::trace() const
+{
+  if (rows != cols)
+  {
+    throw std::logic_error("Matrix is not square\n");
+  }
+  int tr = 0;
+  for (size_t i = 0; i < rows; ++i)
+  {
+    tr += data[i][i];
+  }
+  return tr;
 }
 
 abramov::Matrix abramov::Matrix::horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill)
@@ -411,7 +425,7 @@ abramov::Matrix abramov::Matrix::kroneckerProduct(const Matrix &a, const Matrix 
   return res;
 }
 
-std::ostream &abramov::Matrix::print(std::ostream &out)
+std::ostream &abramov::Matrix::print(std::ostream &out) const
 {
   std::ostream::sentry s(out);
   if (!s)
@@ -491,7 +505,7 @@ void abramov::Matrix::destroyMatrix(int **data, size_t m) noexcept
   delete[] data;
 }
 
-abramov::Matrix abramov::Matrix::createMinor(size_t row, size_t col)
+abramov::Matrix abramov::Matrix::createMinor(size_t row, size_t col) const
 {
   Matrix minor;
   minor.rows = rows - 1;

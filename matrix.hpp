@@ -24,14 +24,15 @@ namespace abramov
     Matrix &operator*=(const Matrix &other);
     template< class T >
     Matrix &operator*=(T scalar);
-    bool operator==(const Matrix &other);
-    Matrix transpose();
-    int determinant();
+    bool operator==(const Matrix &other) const;
+    Matrix transpose() const;
+    int determinant() const;
+    int trace() const;
     static Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
     static Matrix verticalConcat(const Matrix &top, const Matrix &bottom, int fill = 0);
     static Matrix diagonalConcat(const Matrix &a, const Matrix &b, int fill = 0);
     static Matrix kroneckerProduct(const Matrix &a, const Matrix &b);
-    std::ostream &print(std::ostream &out = std::cout);
+    std::ostream &print(std::ostream &out = std::cout) const;
     std::istream &read(std::istream &in = std::cin);
 
     friend Matrix operator+(Matrix lhs, const Matrix &rhs);
@@ -44,7 +45,7 @@ namespace abramov
 
     static int **initMatrix(size_t m, size_t n);
     static void destroyMatrix(int **data, size_t m) noexcept;
-    Matrix createMinor(size_t row, size_t col);
+    Matrix createMinor(size_t row, size_t col) const;
     void swap(Matrix &matrix) noexcept;
   };
 
