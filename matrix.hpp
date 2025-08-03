@@ -28,6 +28,7 @@ namespace abramov
     Matrix transpose() const;
     int determinant() const;
     int trace() const;
+    int perm() const;
     static Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
     static Matrix verticalConcat(const Matrix &top, const Matrix &bottom, int fill = 0);
     static Matrix diagonalConcat(const Matrix &a, const Matrix &b, int fill = 0);

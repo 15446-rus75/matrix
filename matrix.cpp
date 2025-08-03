@@ -298,6 +298,48 @@ int abramov::Matrix::trace() const
   return tr;
 }
 
+int abramov::Matrix::perm() const
+{
+  int **vals = data;
+  int r = rows;
+  int c = cols;
+  if (rows < cols)
+  {
+    Matrix m = transpose();
+    vals = m.data;
+    r = m.rows;
+    c = m.cols;
+  }
+  if (c == 1)
+  {
+    int p = 0;
+    for (size_t i = 0; i < r; ++i)
+    {
+      p += vals[i][0];
+    }
+    return p;
+  }
+  if (c == 2)
+  {
+    int p = 0;
+    for (size_t i = 0; i < r; ++i)
+    {
+      for (size_t j = i + 1; j < r; ++j)
+      {
+        p += vals[i][0] * vals[j][1] + vals[i][1] * vals[j][0];
+      }
+    }
+    return p;
+  }
+  int p = 0;
+  for (size_t i = 0; i < r; ++i)
+  {
+    Matrix minor = createMinor(i, 0);
+    p += vals[i][0] * minor.perm();
+  }
+  return p;
+}
+
 abramov::Matrix abramov::Matrix::horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill)
 {
   size_t max_rows = std::max(lhs.rows, rhs.rows);
