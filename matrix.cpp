@@ -1,4 +1,5 @@
 #include "matrix.hpp"
+#include <numeric>
 #include <stdexcept>
 
 abramov::Matrix::Matrix():
@@ -338,6 +339,51 @@ int abramov::Matrix::perm() const
     p += vals[i][0] * minor.perm();
   }
   return p;
+}
+
+int abramov::Matrix::rank() const
+{
+  abramov::Matrix copy(*this);
+  int r = 0;
+  for (size_t col = 0; col < cols && r < rows; ++col)
+  {
+    int pivot = r;
+    while (pivot < rows && copy.data[pivot][col] == 0)
+    {
+      ++pivot;
+    }
+    if (pivot == rows)
+    {
+      continue;
+    }
+    if (pivot != r)
+    {
+      std::swap(copy.data[r], copy.data[pivot]);
+    }
+    for (size_t i = r + 1; i < rows; ++i)
+    {
+      if (copy.data[i][col] != 0)
+      {
+        int a = copy.data[r][col];
+        int b = copy.data[i][col];
+        while (b != 0)
+        {
+          int temp = b;
+          b = a % b;
+          a = temp;
+        }
+        int gcd_val = a;
+        int f1 = copy.data[r][col] / gcd_val;
+        int f2 = copy.data[i][col] / gcd_val;
+        for (size_t j = col; j < cols; ++j)
+        {
+          copy.data[i][j] = copy.data[i][j] * f1 - copy.data[r][j] * f2;
+        }
+      }
+    }
+    ++r;
+  }
+  return r;
 }
 
 abramov::Matrix abramov::Matrix::horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill)

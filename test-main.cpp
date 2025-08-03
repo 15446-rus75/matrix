@@ -189,6 +189,14 @@ BOOST_AUTO_TEST_CASE(perm)
   BOOST_TEST(m2.perm() == 55456);
 }
 
+BOOST_AUTO_TEST_CASE(rank)
+{
+  abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  BOOST_TEST(m1.rank() == 2);
+  abramov::Matrix m2 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 } };
+  BOOST_TEST(m2.rank() == 2);
+}
+
 BOOST_AUTO_TEST_CASE(horizontal_concat)
 {
   abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 } };
