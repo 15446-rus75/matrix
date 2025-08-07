@@ -155,6 +155,17 @@ BOOST_AUTO_TEST_CASE(operator_multiple_scalar_matrix)
   BOOST_TEST((double_matrix == res));
 }
 
+BOOST_AUTO_TEST_CASE(power)
+{
+  abramov::Matrix m = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  abramov::Matrix square_m = m.power(2);
+  abramov::Matrix res1 = { { 30, 36, 42 }, { 66, 81, 96 }, { 102, 126, 150 } };
+  abramov::Matrix cubic_m = m.power(3);
+  abramov::Matrix res2 = { { 468, 576, 684 }, { 1062, 1305, 1548 }, { 1656, 2034, 2412 } };
+  BOOST_TEST((square_m == res1));
+  BOOST_TEST((cubic_m == res2));
+}
+
 BOOST_AUTO_TEST_CASE(transpose)
 {
   abramov::Matrix matrix = { { 1, 2 }, { 3, 4 }, { 5, 6 }, { 7, 8 } };
@@ -197,11 +208,23 @@ BOOST_AUTO_TEST_CASE(rank)
   BOOST_TEST(m2.rank() == 2);
 }
 
+BOOST_AUTO_TEST_CASE(first_norm)
+{
+  abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  BOOST_TEST(m1.firstNorm() == 18);
+}
+
+BOOST_AUTO_TEST_CASE(infinity_norm)
+{
+  abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+  BOOST_TEST(m1.infinityNorm() == 24);
+}
+
 BOOST_AUTO_TEST_CASE(horizontal_concat)
 {
   abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 } };
   abramov::Matrix m2 = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
-  abramov::Matrix conc = m1.horizontalConcat(m1, m2);
+  abramov::Matrix conc = abramov::Matrix::horizontalConcat(m1, m2);
   abramov::Matrix res = { { 1, 2, 3, 7, 8 }, { 4, 5, 6, 9, 10 }, { 0, 0, 0, 11, 12 } };
   BOOST_TEST((conc == res));
 }
@@ -210,7 +233,7 @@ BOOST_AUTO_TEST_CASE(vertical_concat)
 {
   abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 } };
   abramov::Matrix m2 = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
-  abramov::Matrix conc = m1.verticalConcat(m1, m2);
+  abramov::Matrix conc = abramov::Matrix::verticalConcat(m1, m2);
   abramov::Matrix res = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 }, { 9, 10, 0 }, { 11, 12, 0 } };
   BOOST_TEST((conc == res));
 }
@@ -219,7 +242,7 @@ BOOST_AUTO_TEST_CASE(diagonal_concat)
 {
   abramov::Matrix m1 = { { 1, 2, 3 }, { 4, 5, 6 } };
   abramov::Matrix m2 = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
-  abramov::Matrix conc = m1.diagonalConcat(m1, m2);
+  abramov::Matrix conc = abramov::Matrix::diagonalConcat(m1, m2);
   abramov::Matrix res = { { 1, 2, 3, 0, 0 }, { 4, 5, 6, 0, 0 }, { 0, 0, 0, 7, 8 }, { 0, 0, 0, 9, 10 }, { 0, 0, 0, 11, 12 } };
   BOOST_TEST((conc == res));
 }
@@ -228,7 +251,7 @@ BOOST_AUTO_TEST_CASE(kronecker_product)
 {
   abramov::Matrix m1 = { { 1, 2 }, { 3, 4 } };
   abramov::Matrix m2 = { { 0, 5 }, { 6, 7 } };
-  abramov::Matrix prod = m1.kroneckerProduct(m1, m2);
+  abramov::Matrix prod = abramov::Matrix::kroneckerProduct(m1, m2);
   abramov::Matrix res = { { 0, 5, 0, 10 }, { 6, 7, 12, 14 }, { 0, 15, 0, 20 }, { 18, 21, 24, 28 } };
   BOOST_TEST((prod == res));
 }
