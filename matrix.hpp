@@ -25,15 +25,20 @@ namespace abramov
     template< class T >
     Matrix &operator*=(T scalar);
     bool operator==(const Matrix &other) const;
+    Matrix power(size_t k) const;
     Matrix transpose() const;
     int determinant() const;
     int trace() const;
     int perm() const;
     int rank() const;
+    int firstNorm() const;
+    int infinityNorm() const;
+
     static Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
     static Matrix verticalConcat(const Matrix &top, const Matrix &bottom, int fill = 0);
     static Matrix diagonalConcat(const Matrix &a, const Matrix &b, int fill = 0);
     static Matrix kroneckerProduct(const Matrix &a, const Matrix &b);
+
     std::ostream &print(std::ostream &out = std::cout) const;
     std::istream &read(std::istream &in = std::cin);
 

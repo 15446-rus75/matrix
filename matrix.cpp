@@ -227,6 +227,40 @@ bool abramov::Matrix::operator==(const Matrix &other) const
   return true;
 }
 
+abramov::Matrix abramov::Matrix::power(size_t k) const
+{
+  if (rows != cols)
+  {
+    throw std::logic_error("Matrix must be square\n");
+  }
+  if (k == 0)
+  {
+    Matrix res(3, 3, 0);
+    for (size_t i = 0; i < 3; ++i)
+    {
+      res.data[i][i] = 1;
+    }
+    return res;
+  }
+  if (k == 1)
+  {
+    return Matrix(*this);
+  }
+  Matrix res(*this);
+  Matrix temp(*this);
+  int p = k - 1;
+  while (p > 0)
+  {
+    if (p % 2 == 1)
+    {
+      res *= temp;
+    }
+    temp *= temp;
+    p /= 2;
+  }
+  return res;
+}
+
 abramov::Matrix abramov::Matrix::transpose() const
 {
   Matrix res;
@@ -384,6 +418,36 @@ int abramov::Matrix::rank() const
     ++r;
   }
   return r;
+}
+
+int abramov::Matrix::firstNorm() const
+{
+  int norm = 0;
+  for (size_t j = 0; j < cols; ++j)
+  {
+    int curr = 0;
+    for (size_t i = 0; i < rows; ++i)
+    {
+      curr += std::abs(data[i][j]);
+    }
+    norm = std::max(norm, curr);
+  }
+  return norm;
+}
+
+int abramov::Matrix::infinityNorm() const
+{
+  int norm = 0;
+  for (size_t i = 0; i < rows; ++i)
+  {
+    int curr = 0;
+    for (size_t j = 0; j < cols; ++j)
+    {
+      curr += std::abs(data[i][j]);
+    }
+    norm = std::max(norm, curr);
+  }
+  return norm;
 }
 
 abramov::Matrix abramov::Matrix::horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill)
