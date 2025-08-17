@@ -1,9 +1,9 @@
 CXX = g++
-CXXFLAGS = -std=c++14 -Wall -Wextra -I.
+CXXFLAGS = -std=c++20 -Wall -Wextra -I.
 TEST_LDFLAGS = -lboost_unit_test_framework -static
 
-PROGRAM_SRCS = main.cpp matrix.cpp
-TEST_SRCS = test-main.cpp matrix.cpp
+PROGRAM_SRCS = main.cpp
+TEST_SRCS = test-main.cpp
 
 PROGRAM = matrix_program
 TEST_EXEC = matrix_tests

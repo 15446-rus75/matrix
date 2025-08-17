@@ -1,11 +1,16 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 #include <cstddef>
+#include <concepts>
 #include <iostream>
 #include <initializer_list>
 
 namespace abramov
 {
+  template< class T >
+  concept Integral = std::is_integral_v< T >;
+
+  template< Integral T >
   struct Matrix
   {
     Matrix();
@@ -13,7 +18,7 @@ namespace abramov
     Matrix(Matrix &&matrix) noexcept;
     Matrix(size_t m, size_t n, int value);
     Matrix(size_t m, size_t n, const int *values);
-    Matrix(std::initializer_list< std::initializer_list< int > > init);
+    Matrix(std::initializer_list< std::initializer_list< T > > init);
     ~Matrix();
     Matrix &operator=(const Matrix &matrix);
     Matrix &operator=(Matrix &&matrix) noexcept;
@@ -22,8 +27,8 @@ namespace abramov
     Matrix &operator-=(const Matrix &other);
     Matrix operator-() const;
     Matrix &operator*=(const Matrix &other);
-    template< class T >
-    Matrix &operator*=(T scalar);
+    template< class V >
+    Matrix &operator*=(V scalar);
     bool operator==(const Matrix &other) const;
     Matrix power(size_t k) const;
     Matrix transpose() const;
@@ -34,9 +39,9 @@ namespace abramov
     int firstNorm() const;
     int infinityNorm() const;
 
-    static Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, int fill = 0);
-    static Matrix verticalConcat(const Matrix &top, const Matrix &bottom, int fill = 0);
-    static Matrix diagonalConcat(const Matrix &a, const Matrix &b, int fill = 0);
+    static Matrix horizontalConcat(const Matrix &lhs, const Matrix &rhs, T fill = 0);
+    static Matrix verticalConcat(const Matrix &top, const Matrix &bottom, T fill = 0);
+    static Matrix diagonalConcat(const Matrix &a, const Matrix &b, T fill = 0);
     static Matrix kroneckerProduct(const Matrix &a, const Matrix &b);
 
     std::ostream &print(std::ostream &out = std::cout) const;
@@ -46,12 +51,12 @@ namespace abramov
     friend Matrix operator-(Matrix lhs, const Matrix &rhs);
     friend Matrix operator*(Matrix lhs, const Matrix &rhs);
   private:
-    int **data;
+    T **data;
     size_t rows;
     size_t cols;
 
     static int **initMatrix(size_t m, size_t n);
-    static void destroyMatrix(int **data, size_t m) noexcept;
+    static void destroyMatrix(T **data, size_t m) noexcept;
     Matrix createMinor(size_t row, size_t col) const;
     void swap(Matrix &matrix) noexcept;
   };
@@ -59,35 +64,10 @@ namespace abramov
   Matrix operator+(Matrix lhs, const Matrix &rhs);
   Matrix operator-(Matrix lhs, const Matrix &rhs);
   Matrix operator*(Matrix lhs, const Matrix &rhs);
-  template< class T >
-  Matrix operator*(Matrix lhs, T scalar);
-  template< class T >
-  Matrix operator*(T scalar, const Matrix &rhs);
+  template< class V >
+  Matrix operator*(Matrix lhs, V scalar);
+  template< class V >
+  Matrix operator*(V scalar, const Matrix &rhs);
 }
 
-template< class T >
-abramov::Matrix &abramov::Matrix::operator*=(T scalar)
-{
-  for (size_t i = 0; i < rows; ++i)
-  {
-    for (size_t j = 0; j < cols; ++j)
-    {
-      data[i][j] *= static_cast< int >(scalar);
-    }
-  }
-  return *this;
-}
-
-template< class T >
-abramov::Matrix abramov::operator*(Matrix lhs, T scalar)
-{
-  lhs *= scalar;
-  return lhs;
-}
-
-template< class T >
-abramov::Matrix abramov::operator*(T scalar, const Matrix &rhs)
-{
-  return rhs * scalar;
-}
 #endif
