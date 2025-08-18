@@ -18,8 +18,8 @@ int main(int argc, char **argv)
     std::cerr << "Incorrect filename\n";
     return 1;
   }
-  abramov::Matrix m1;
-  abramov::Matrix m2;
+  abramov::Matrix< int > m1;
+  abramov::Matrix< int > m2;
   if (!m1.read(input1))
   {
     std::cerr << "Fail to read first matrix\n";
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
   try
   {
-    abramov::Matrix copy = m1;
+    abramov::Matrix< int > copy = m1;
     copy += m2;
     std::cout << "operator+=\n";
     copy.print();
@@ -118,20 +118,20 @@ int main(int argc, char **argv)
     copy.print();
     std::cout << '\n';
 
-    copy = Matrix::horizontalConcat(m1, m2);
+    copy = Matrix< int >::horizontalConcat(m1, m2);
     std::cout << "horizontal_concatenation\n";
     copy.print();
     std::cout << '\n';
-    copy = Matrix::verticalConcat(m1, m2);
+    copy = Matrix< int >::verticalConcat(m1, m2);
     std::cout << "vertical_concatenation\n";
     copy.print();
     std::cout << '\n';
-    copy = Matrix::diagonalConcat(m1,m2);
+    copy = Matrix< int >::diagonalConcat(m1,m2);
     std::cout << "diagonal_concatenation\n";
     copy.print();
     std::cout << '\n';
 
-    copy = Matrix::kroneckerProduct(m1, m2);
+    copy = Matrix< int >::kroneckerProduct(m1, m2);
     std::cout << "Kronecker product\n";
     copy.print();
   }
