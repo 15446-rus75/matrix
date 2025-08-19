@@ -220,6 +220,17 @@ BOOST_AUTO_TEST_CASE(infinity_norm)
   BOOST_TEST(m1.infinityNorm() == 24);
 }
 
+BOOST_AUTO_TEST_CASE(inverse)
+{
+  abramov::Matrix< int > m = { { 1, 2, 3 }, { 4, 5, 4 }, { 3, 2, 1 } };
+  auto p = m.inverse();
+  abramov::Matrix< int > inv = p.second;
+  double d = p.first;
+  abramov::Matrix< int > m1 = { { -3, 4, -7 }, { 8, -8, 8 }, { -7, 4, -3 } };
+  BOOST_TEST(d == -0.125);
+  BOOST_TEST((inv == m1));
+}
+
 BOOST_AUTO_TEST_CASE(horizontal_concat)
 {
   abramov::Matrix< int > m1 = { { 1, 2, 3 }, { 4, 5, 6 } };

@@ -54,6 +54,7 @@ namespace abramov
     int rank() const;
     int firstNorm() const;
     int infinityNorm() const;
+    std::pair< double, Matrix< T > > inverse() const;
 
     static Matrix< T > horizontalConcat(const Matrix< T > &lhs, const Matrix< T > &rhs, T fill = 0);
     static Matrix< T > verticalConcat(const Matrix< T > &top, const Matrix< T > &bottom, T fill = 0);
@@ -559,6 +560,38 @@ int abramov::Matrix< T >::infinityNorm() const
     norm = std::max(norm, curr);
   }
   return norm;
+}
+
+template< abramov::Integral T >
+std::pair< double, abramov::Matrix< T > > abramov::Matrix< T >::inverse() const
+{
+  if (rows != cols)
+  {
+    throw std::logic_error("Matrix must be square\n");
+  }
+  int det = determinant();
+  if (det == 0)
+  {
+    throw std::logic_error("Matrix does not have inverse\n");
+  }
+  Matrix< T > adj(rows, cols, 0);
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < cols; ++j)
+    {
+      Matrix< T > minor = createMinor(i, j);
+      int minor_det = minor.determinant();
+      if ((i + j) % 2 == 0)
+      {
+        adj.data[j][i] = minor_det;
+      }
+      else
+      {
+        adj.data[j][i] = -1 * minor_det;
+      }
+    }
+  }
+  return { 1.0 / det, adj };
 }
 
 template< abramov::Integral T >
