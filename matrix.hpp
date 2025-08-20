@@ -1,5 +1,6 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
+#include <vector>
 #include <cstddef>
 #include <concepts>
 #include <iostream>
@@ -55,6 +56,7 @@ namespace abramov
     int firstNorm() const;
     int infinityNorm() const;
     std::pair< double, Matrix< T > > inverse() const;
+    std::vector< double > solveCramer() const;
 
     static Matrix< T > horizontalConcat(const Matrix< T > &lhs, const Matrix< T > &rhs, T fill = 0);
     static Matrix< T > verticalConcat(const Matrix< T > &top, const Matrix< T > &bottom, T fill = 0);
@@ -71,6 +73,7 @@ namespace abramov
     static T **initMatrix(size_t m, size_t n);
     static void destroyMatrix(T **data, size_t m) noexcept;
     Matrix< T > createMinor(size_t row, size_t col) const;
+    Matrix< T > replaceColumn(size_t col, const std::vector< T > &newCol) const;
     void swap(Matrix< T > &matrix) noexcept;
   };
 }
@@ -595,6 +598,38 @@ std::pair< double, abramov::Matrix< T > > abramov::Matrix< T >::inverse() const
 }
 
 template< abramov::Integral T >
+std::vector< double > abramov::Matrix< T >::solveCramer() const
+{
+  if (rows != cols - 1)
+  {
+    throw std::logic_error("For Cramer`s method number of equations must be equal to number of vars\n");
+  }
+  Matrix< T > coeffs(rows, rows, 0);
+  std::vector< T > consts(rows);
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < rows; ++j)
+    {
+      coeffs.data[i][j] = data[i][j];
+    }
+    consts[i] = data[i][cols - 1];
+  }
+  int det = coeffs.determinant();
+  if (det == 0)
+  {
+    throw std::logic_error("System has no unique solution\n");
+  }
+  std::vector< double > solution(rows);
+  for (size_t j = 0; j < rows; ++j)
+  {
+    Matrix< T > m = coeffs.replaceColumn(j, consts);
+    double det_j = static_cast< double >(m.determinant());
+    solution[j] = det_j / det;
+  }
+  return solution;
+}
+
+template< abramov::Integral T >
 abramov::Matrix< T > abramov::Matrix< T >::horizontalConcat(const Matrix< T > &lhs, const Matrix< T > &rhs, T fill)
 {
   size_t max_rows = std::max(lhs.rows, rhs.rows);
@@ -834,6 +869,27 @@ abramov::Matrix< T > abramov::Matrix< T >::createMinor(size_t row, size_t col) c
     ++mi;
   }
   return minor;
+}
+
+template< abramov::Integral T >
+abramov::Matrix< T > abramov::Matrix< T >::replaceColumn(size_t col, const std::vector< T > &newCol) const
+{
+  Matrix< T > res(rows, cols, 0);
+  for (size_t i = 0; i < rows; ++i)
+  {
+    for (size_t j = 0; j < cols; ++j)
+    {
+      if (j == col)
+      {
+        res.data[i][j] = newCol[i];
+      }
+      else
+      {
+        res.data[i][j] = data[i][j];
+      }
+    }
+  }
+  return res;
 }
 
 template< abramov::Integral T >

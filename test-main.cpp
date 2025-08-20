@@ -231,6 +231,16 @@ BOOST_AUTO_TEST_CASE(inverse)
   BOOST_TEST((inv == m1));
 }
 
+BOOST_AUTO_TEST_CASE(cramer)
+{
+  abramov::Matrix< int > m = { { 2, 1, 4, 1 }, { 3, 5, 2, 2 }, { 4, 1, 2, 3 } };
+  auto sol = m.solveCramer();
+  BOOST_TEST(sol.size() == 3);
+  BOOST_TEST(sol[0] == 0.84);
+  BOOST_TEST(sol[1] == -0.04);
+  BOOST_TEST(sol[2] == -0.16);
+}
+
 BOOST_AUTO_TEST_CASE(horizontal_concat)
 {
   abramov::Matrix< int > m1 = { { 1, 2, 3 }, { 4, 5, 6 } };
