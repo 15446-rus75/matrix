@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include "matrix.hpp"
 
@@ -108,6 +109,30 @@ int main(int argc, char **argv)
     std::cout << "infinity norm of the first matrix: " << m1.infinityNorm() << '\n';
     std::cout << "infinity norm of the second matrix: " << m2.infinityNorm() << '\n';
     std::cout << '\n';
+
+    auto p1 = m1.inverse();
+    std::cout << "first inverse matrix\n";
+    std::cout << "factor " << std::setprecision(2) << p1.first << '\n';
+    std::cout << "integer matrix\n";
+    p1.second.print();
+    auto p2 = m2.inverse();
+    std::cout << "second inverse matrix\n";
+    std::cout << "factor " << p2.first << '\n';
+    std::cout << "integer matrix\n";
+    p2.second.print();
+    std::cout << '\n';
+
+    std::ifstream input3("cramer.txt");
+    abramov::Matrix< int > cr;
+    cr.read(input3);
+    auto v1 = cr.solveCramer();
+    std::cout << "solutions of the matrix as system of linear equations\n";
+    std::cout << *(v1.begin());
+    for (auto it = ++v1.begin(); it != v1.end(); ++it)
+    {
+      std::cout << ' ' << *it;
+    }
+    std::cout << '\n' << '\n';
 
     copy = m1 * 2;
     std::cout << "operator_multiple_matrix_scalar\n";
