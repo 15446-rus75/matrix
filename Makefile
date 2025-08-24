@@ -1,6 +1,10 @@
 CXX = g++
-CXXFLAGS = -std=c++20 -Wall -Wextra -I.
-TEST_LDFLAGS = -lboost_unit_test_framework -static
+CXXFLAGS = -std=c++20 -Wall -Wextra
+BOOST_ROOT = /mnt/c/Users/vlada/boost_1_89_0
+BOOST_INCLUDE = -I$(BOOST_ROOT)
+BOOST_LIB_DIR = -L$(BOOST_ROOT)/stage/lib
+
+TEST_LDFLAGS = $(BOOST_LIB_DIR) -lboost_unit_test_framework -static
 
 PROGRAM_SRCS = main.cpp
 TEST_SRCS = test-main.cpp
@@ -13,13 +17,13 @@ TEST_EXEC = matrix_tests
 all: $(PROGRAM)
 
 $(PROGRAM): $(PROGRAM_SRCS) matrix.hpp
-	$(CXX) $(CXXFLAGS) $(PROGRAM_SRCS) -o $@
+	$(CXX) $(CXXFLAGS) $(BOOST_INCLUDE) $(PROGRAM_SRCS) -o $@
 
 $(TEST_EXEC): $(TEST_SRCS) matrix.hpp
-	$(CXX) $(CXXFLAGS) $(TEST_SRCS) -o $@ $(TEST_LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(BOOST_INCLUDE) $(TEST_SRCS) -o $@ $(TEST_LDFLAGS)
 
 test: $(TEST_EXEC)
-	./$(TEST_EXEC)
+	LD_LIBRARY_PATH=$(BOOST_ROOT)/stage/lib:$$LD_LIBRARY_PATH ./$(TEST_EXEC)
 
 run: $(PROGRAM)
 	@if [ -z "$(arg1)" ] || [ -z "$(arg2)" ]; then \
