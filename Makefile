@@ -7,7 +7,7 @@ BOOST_LIB_DIR = -L$(BOOST_ROOT)/stage/lib
 TEST_LDFLAGS = $(BOOST_LIB_DIR) -lboost_unit_test_framework -static
 
 PROGRAM_SRCS = main.cpp
-TEST_SRCS = test-main.cpp
+TEST_SRCS = test-matrix.cpp
 
 PROGRAM = matrix_program
 TEST_EXEC = matrix_tests
