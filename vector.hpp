@@ -14,11 +14,14 @@ namespace abramov
 
   template< Numeric T, size_t N >
   Vector< T, N > operator+(Vector< T, N > lhs, const Vector< T, N > &rhs);
+  template< Numeric T, size_t N >
+  Vector< T, N > operator-(Vector< T, N > lhs, const Vector< T, N > &rhs);
 
   template< Numeric T, size_t N >
   struct Vector
   {
     friend Vector< T, N > operator+<>(Vector< T, N > lhs, const Vector< T, N > &rhs);
+    friend Vector< T, N > operator-<>(Vector< T, N > lhs, const Vector< T, N > &rhs);
 
     Vector();
     Vector(const Vector< T, N > &other);
@@ -29,6 +32,8 @@ namespace abramov
     Vector< T, N > &operator=(Vector &&other) noexcept;
     Vector< T, N > &operator+=(const Vector< T, N > &other);
     Vector< T, N > operator+() const;
+    Vector< T, N > &operator-=(const Vector< T, N > &other);
+    Vector< T, N > operator-() const;
     bool operator==(const Vector< T, N > &other) const;
     bool operator!=(const Vector< T, N > &other) const;
   private:
@@ -105,6 +110,34 @@ template< abramov::Numeric T, size_t N >
 abramov::Vector< T, N > abramov::Vector< T, N >::operator+() const
 {
   return *this;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > &abramov::Vector< T, N >::operator-=(const Vector< T, N > &other)
+{
+  for (size_t i = 0; i < N; ++i)
+  {
+    data[i] -= other.data[i];
+  }
+  return *this;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > abramov::operator-(Vector< T, N > lhs, const Vector< T, N > &rhs)
+{
+  lhs -= rhs;
+  return lhs;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > abramov::Vector< T, N >::operator-() const
+{
+  abramov::Vector< T, N > res(*this);
+  for (size_t i = 0; i < N; ++i)
+  {
+    res.data[i] *= -1;
+  }
+  return res;
 }
 
 template< abramov::Numeric T, size_t N >
