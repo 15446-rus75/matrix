@@ -16,6 +16,10 @@ namespace abramov
   Vector< T, N > operator+(Vector< T, N > lhs, const Vector< T, N > &rhs);
   template< Numeric T, size_t N >
   Vector< T, N > operator-(Vector< T, N > lhs, const Vector< T, N > &rhs);
+  template< Numeric T, size_t N >
+  Vector< T, N > operator*(Vector< T, N > lhs, T scalar);
+  template< Numeric T, size_t N >
+  Vector< T, N > operator*(T scalar, const Vector< T, N > &rhs);
 
   template< Numeric T, size_t N >
   struct Vector
@@ -34,6 +38,7 @@ namespace abramov
     Vector< T, N > operator+() const;
     Vector< T, N > &operator-=(const Vector< T, N > &other);
     Vector< T, N > operator-() const;
+    Vector< T, N > &operator*=(T scalar);
     bool operator==(const Vector< T, N > &other) const;
     bool operator!=(const Vector< T, N > &other) const;
   private:
@@ -138,6 +143,29 @@ abramov::Vector< T, N > abramov::Vector< T, N >::operator-() const
     res.data[i] *= -1;
   }
   return res;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > &abramov::Vector< T, N >::operator*=(T scalar)
+{
+  for (size_t i = 0; i < N; ++i)
+  {
+    data[i] *= scalar;
+  }
+  return *this;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > abramov::operator*(Vector< T, N > lhs, T scalar)
+{
+  lhs *= scalar;
+  return lhs;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > abramov::operator*(T scalar, const Vector< T, N > &rhs)
+{
+  return rhs * scalar;
 }
 
 template< abramov::Numeric T, size_t N >

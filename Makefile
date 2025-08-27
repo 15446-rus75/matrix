@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++20 -Wall -Wextra
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wno-sign-compare
 BOOST_ROOT = /mnt/c/Users/vlada/boost_1_89_0
 BOOST_INCLUDE = -I$(BOOST_ROOT)
 BOOST_LIB_DIR = -L$(BOOST_ROOT)/stage/lib
