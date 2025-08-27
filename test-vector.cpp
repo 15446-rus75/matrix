@@ -99,6 +99,30 @@ BOOST_AUTO_TEST_CASE(operator_binary_minus)
   BOOST_TEST((vect3 == vect));
 }
 
+BOOST_AUTO_TEST_CASE(operator_multiply_equal)
+{
+  abramov::Vector< int, N > vect1 = { 1, 2, 3 };
+  abramov::Vector< int, N > vect2 = { 2, 4, 6 };
+  vect1 *= 2;
+  BOOST_TEST((vect2 == vect1));
+}
+
+BOOST_AUTO_TEST_CASE(operator_multiply_vector_scalar)
+{
+  abramov::Vector< int, N > vect1 = { 1, 2, 3 };
+  abramov::Vector< int, N > vect2 = vect1 * 2;
+  abramov::Vector< int, N > vect = { 2, 4, 6 };
+  BOOST_TEST((vect == vect2));
+}
+
+BOOST_AUTO_TEST_CASE(operator_multiply_scalar_vector)
+{
+  abramov::Vector< int, N > vect1 = { 1, 2, 3 };
+  abramov::Vector< int, N > vect2 = 2 * vect1;
+  abramov::Vector< int, N > vect = { 2, 4, 6 };
+  BOOST_TEST((vect == vect2));
+}
+
 BOOST_AUTO_TEST_CASE(equal_operator)
 {
   abramov::Vector< double, N > vect1 = { 1.0, 2.0, 3.0 };
