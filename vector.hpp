@@ -8,10 +8,18 @@ namespace abramov
 {
   template< class T >
   concept Numeric = std::integral< T > || std::floating_point< T >;
+  template< Numeric T, size_t N >
+  struct Vector;
+
+
+  template< Numeric T, size_t N >
+  Vector< T, N > operator+(Vector< T, N > lhs, const Vector< T, N > &rhs);
 
   template< Numeric T, size_t N >
   struct Vector
   {
+    friend Vector< T, N > operator+<>(Vector< T, N > lhs, const Vector< T, N > &rhs);
+
     Vector();
     Vector(const Vector< T, N > &other);
     Vector(Vector< T, N > &&other) noexcept;
@@ -19,6 +27,8 @@ namespace abramov
     ~Vector() = default;
     Vector< T, N > &operator=(const Vector< T, N > &other);
     Vector< T, N > &operator=(Vector &&other) noexcept;
+    Vector< T, N > &operator+=(const Vector< T, N > &other);
+    Vector< T, N > operator+() const;
     bool operator==(const Vector< T, N > &other) const;
     bool operator!=(const Vector< T, N > &other) const;
   private:
@@ -71,6 +81,29 @@ abramov::Vector< T, N > &abramov::Vector< T, N >::operator=(Vector< T, N > &&oth
 {
   Vector< T, N > tmp(other);
   swap(tmp);
+  return *this;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > &abramov::Vector< T, N >::operator+=(const Vector< T, N > &other)
+{
+  for (size_t i = 0; i < N; ++i)
+  {
+    data[i] += other.data[i];
+  }
+  return *this;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > abramov::operator+(Vector< T, N > lhs, const Vector< T, N > &rhs)
+{
+  lhs += rhs;
+  return lhs;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N > abramov::Vector< T, N >::operator+() const
+{
   return *this;
 }
 
