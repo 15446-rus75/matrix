@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include "matrix.hpp"
+#include "vector.hpp"
 
 int main(int argc, char **argv)
 {
