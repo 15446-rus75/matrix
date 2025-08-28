@@ -1,6 +1,7 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 #include <array>
+#include <cmath>
 #include <concepts>
 #include <initializer_list>
 
@@ -31,6 +32,7 @@ namespace abramov
     Vector(const Vector< T, N > &other);
     Vector(Vector< T, N > &&other) noexcept;
     Vector(std::initializer_list< T > init);
+    explicit Vector(const std::array< T, N > &arr);
     ~Vector() = default;
     Vector< T, N > &operator=(const Vector< T, N > &other);
     Vector< T, N > &operator=(Vector &&other) noexcept;
@@ -41,6 +43,11 @@ namespace abramov
     Vector< T, N > &operator*=(T scalar);
     bool operator==(const Vector< T, N > &other) const;
     bool operator!=(const Vector< T, N > &other) const;
+    T dot(const Vector< T, N > &other) const;
+    Vector< T, N > cross(const Vector< T, N > &other) const;
+    T triple(const Vector< T, N > &b, const Vector< T, N > &c) const;
+    double norm() const;
+    Vector< double, N > normalized() const;
   private:
     std::array< T, N > data;
 
@@ -77,6 +84,11 @@ abramov::Vector< T, N >::Vector(std::initializer_list< T > init):
     data[i++] = *it;
   }
 }
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N >::Vector(const std::array< T, N > &arr):
+  data(arr)
+{}
 
 template< abramov::Numeric T, size_t N >
 abramov::Vector< T, N > &abramov::Vector< T, N >::operator=(const Vector< T, N > &other)
@@ -185,6 +197,68 @@ template< abramov::Numeric T, size_t N >
 bool abramov::Vector< T, N >::operator!=(const Vector< T, N > &other) const
 {
   return !(*this == other);
+}
+
+template< abramov::Numeric T, size_t N >
+T abramov::Vector< T, N >::dot(const Vector< T, N > &other) const
+{
+  T res = 0;
+  for (size_t i = 0; i < N; ++i)
+  {
+    res += data[i] * other.data[i];
+  }
+  return res;
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< T, N >abramov::Vector< T, N >::cross(const Vector< T, N > &other) const
+{
+  if (N != 3)
+  {
+    throw std::logic_error("Vector must be 3D\n");
+  }
+  T x = data[1] * other.data[2] - data[2] * other.data[1];
+  T y = data[2] * other.data[0] - data[0] * other.data[2];
+  T z = data[0] * other.data[1] - data[1] * other.data[0];
+  return Vector({ x, y, z });
+}
+
+template< abramov::Numeric T, size_t N >
+T abramov::Vector< T, N >::triple(const Vector< T, N > &b, const Vector< T, N > &c) const
+{
+  if (N != 3)
+  {
+    throw std::logic_error("Vector must be 3D\n");
+  }
+  return dot(b.cross(c));
+}
+
+template< abramov::Numeric T, size_t N >
+double abramov::Vector< T, N >::norm() const
+{
+  double res = 0;
+  for (size_t i = 0; i < N; ++i)
+  {
+    res += data[i] * data[i];
+  }
+  return std::sqrt(res);
+}
+
+template< abramov::Numeric T, size_t N >
+abramov::Vector< double, N > abramov::Vector< T, N >::normalized() const
+{
+  double len = norm();
+  if (len == 0)
+  {
+    throw std::logic_error("Zero vector can not be normalized\n");
+  }
+  std::array< double, N > arr;
+  for (size_t i = 0; i < N; ++i)
+  {
+    arr[i] = static_cast< double >(data[i]) / len;
+  }
+  Vector< double, N > res(arr);
+  return res;
 }
 
 template< abramov::Numeric T, size_t N >
