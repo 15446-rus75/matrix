@@ -48,6 +48,11 @@ namespace abramov
     T triple(const Vector< T, N > &b, const Vector< T, N > &c) const;
     double norm() const;
     Vector< double, N > normalized() const;
+    double distance(const Vector< T, N > &other) const;
+    double angle(const Vector< T, N > &other) const;
+    double cross2D(const Vector< T, N > &other) const;
+    std::istream &read(std::istream &in = std::cin);
+    std::ostream &print(std::ostream &out = std::cout) const;
   private:
     std::array< T, N > data;
 
@@ -259,6 +264,77 @@ abramov::Vector< double, N > abramov::Vector< T, N >::normalized() const
   }
   Vector< double, N > res(arr);
   return res;
+}
+
+template< abramov::Numeric T, size_t N >
+double abramov::Vector< T, N >::distance(const Vector< T, N > &other) const
+{
+  double dist = 0;
+  for (size_t i = 0; i < N; ++i)
+  {
+    dist += (data[i] - other.data[i]) * (data[i] - other.data[i]);
+  }
+  return std::sqrt(dist);
+}
+
+template< abramov::Numeric T, size_t N >
+double abramov::Vector< T, N >::angle(const Vector< T, N > &other) const
+{
+  double dot_product = dot(other);
+  double norm1 = norm();
+  double norm2 = other.norm();
+  if (norm1 == 0 || norm2 == 0)
+  {
+    throw std::logic_error("Can not compute angle with zero vector\n");
+  }
+  return std::acos(dot_product / (norm1 * norm2));
+}
+
+template< abramov::Numeric T, size_t N >
+double abramov::Vector< T, N >::cross2D(const Vector< T, N > &other) const
+{
+  if (N != 2 )
+  {
+    throw std::logic_error("Cross2D is only defined for 2D vectors\n");
+  }
+  return data[0] * other.data[1] - data[1] * other.data[0];
+}
+
+template< abramov::Numeric T, size_t N >
+std::istream &abramov::Vector< T, N >::read(std::istream &in)
+{
+  std::istream::sentry s(in);
+  if (!s)
+  {
+    return in;
+  }
+  size_t n = 0;
+  in >> n;
+  for (size_t i = 0; i < n; ++i)
+  {
+    if (!(in >> data[i]))
+    {
+      throw std::runtime_error("Error reading vector\n");
+    }
+  }
+  return in;
+}
+
+template< abramov::Numeric T, size_t N >
+std::ostream &abramov::Vector< T, N >::print(std::ostream &out) const
+{
+  std::ostream::sentry s(out);
+  if (!s)
+  {
+    return out;
+  }
+  out << '{' << ' ' << data[0];
+  for (size_t i = 1; i < N; ++i)
+  {
+    out << ',' << ' ' << data[i];
+  }
+  out << ' ' << '}';
+  return out;
 }
 
 template< abramov::Numeric T, size_t N >
