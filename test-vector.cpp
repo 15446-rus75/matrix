@@ -164,6 +164,27 @@ BOOST_AUTO_TEST_CASE(normalized)
   BOOST_TEST((vect2 == vect));
 }
 
+BOOST_AUTO_TEST_CASE(distance)
+{
+  abramov::Vector< int, N > vect1 = { 2, -4, 1 };
+  abramov::Vector< int, N > vect2 = { 2, 5, 1 };
+  BOOST_TEST(std::abs(vect1.distance(vect2) - 9.0) < 1e-3);
+}
+
+BOOST_AUTO_TEST_CASE(angle)
+{
+  abramov::Vector< int, N > vect1 = { 1, 2, 3 };
+  abramov::Vector< int, N > vect2 = { -3, -2, -1 };
+  BOOST_TEST(std::abs(vect1.angle(vect2) - 2.366) < 1e-3);
+}
+
+BOOST_AUTO_TEST_CASE(cross2D)
+{
+  abramov::Vector< int, 2 > vect1 = { 1, 2 };
+  abramov::Vector< int, 2 > vect2 = { 3, 4 };
+  BOOST_TEST(vect1.cross2D(vect2) == -2);
+}
+
 BOOST_AUTO_TEST_CASE(equal_operator)
 {
   abramov::Vector< double, N > vect1 = { 1.0, 2.0, 3.0 };

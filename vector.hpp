@@ -50,7 +50,7 @@ namespace abramov
     Vector< double, N > normalized() const;
     double distance(const Vector< T, N > &other) const;
     double angle(const Vector< T, N > &other) const;
-    double cross2D(const Vector< T, N > &other) const;
+    T cross2D(const Vector< T, N > &other) const;
     std::istream &read(std::istream &in = std::cin);
     std::ostream &print(std::ostream &out = std::cout) const;
   private:
@@ -291,13 +291,14 @@ double abramov::Vector< T, N >::angle(const Vector< T, N > &other) const
 }
 
 template< abramov::Numeric T, size_t N >
-double abramov::Vector< T, N >::cross2D(const Vector< T, N > &other) const
+T abramov::Vector< T, N >::cross2D(const Vector< T, N > &other) const
 {
   if (N != 2 )
   {
     throw std::logic_error("Cross2D is only defined for 2D vectors\n");
   }
-  return data[0] * other.data[1] - data[1] * other.data[0];
+  T res =  data[0] * other.data[1] - data[1] * other.data[0];
+  return res;
 }
 
 template< abramov::Numeric T, size_t N >
